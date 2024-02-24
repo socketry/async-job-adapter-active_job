@@ -3,9 +3,10 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
+require 'async/job'
+
 require 'thread/local'
-require 'async/redis/client'
-require 'async/job/backend/redis/server'
+
 
 module Async
 	module Job

@@ -5,5 +5,4 @@
 
 require_relative 'active_job/version'
 require_relative 'active_job/queue_adapter'
-
 require_relative "active_job/railtie" if defined?(Rails::Railtie)
