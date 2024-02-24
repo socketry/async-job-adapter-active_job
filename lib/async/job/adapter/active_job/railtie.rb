@@ -12,14 +12,15 @@ module Async
 		module Adapter
 			module ActiveJob
 				class Railtie < ::Rails::Railtie
+					config.async_job = ActiveSupport::OrderedOptions.new
+					
 					module Dispatcher
 						extend Thread::Local
 						
 						def self.local
-							# We should load configuration from the Railtie...
-							
-							client = Async::Redis::Client.new
-							server = Async::Job::Backend::Redis::Server.new(client, "async:job:active_job")
+							server = Async::Job::Backend.new(
+								**Railtie.config.async_job
+							)
 							
 							return QueueAdapter.new(server)
 						end
