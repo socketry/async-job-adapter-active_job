@@ -22,17 +22,6 @@ module Async
 						Console.info(self, "Enqueueing job at...", id: job.job_id, timestamp: timestamp)
 						@server.schedule(@coder.dump(job.serialize), timestamp)
 					end
-					
-					def start
-						Async do
-							@server.start
-							
-							@server.each do |id, data|
-								job = @coder.parse(data)
-								::ActiveJob::Base.execute(job)
-							end
-						end
-					end
 				end
 			end
 		end

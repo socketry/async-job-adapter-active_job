@@ -35,18 +35,13 @@ $ bundle exec ./job-server.rb
 ```ruby
 Rails.application.configure do
 	config.async_job.backend_for :default, :critical do
-		endpoint = Async::IO::Endpoint.tcp('redis.local')
-		server = Async::Job::Backend::Redis.new(endpoint: endpoint)
-		
-		Async::Job::Adapter::ActiveJob::QueueAdapter.new(server)
+		queue Async::Job::Backend::Redis, endpoint: Async::IO::Endpoint.tcp('redis.local')
 	end
 	
 	config.async_job.aliases_for :default, :email
 	
 	config.async_job.backend_for :local do
-		Async::Job::Adapter::ActiveJob::QueueAdapter.new(
-			Async::Job::Adapter::Redis.new
-		)
+		queue Async::Job::Backend::Inline
 	end
 end
 ```

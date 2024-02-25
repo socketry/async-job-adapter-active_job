@@ -17,11 +17,9 @@ module Async
 		module Adapter
 			module ActiveJob
 				class Railtie < ::Rails::Railtie
-					DEFAULT_REDIS = ->{
-						Async::Job::Adapter::ActiveJob::QueueAdapter.new(
-							Async::Job::Backend::Redis.new
-						)
-					}
+					DEFAULT_REDIS = proc do
+						queue Async::Job::Backend::Redis
+					end
 					
 					def initialize
 						@backends = {default: DEFAULT_REDIS}
