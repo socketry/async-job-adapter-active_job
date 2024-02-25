@@ -4,38 +4,78 @@
 # Copyright, 2024, by Samuel Williams.
 
 require 'async/job'
-
 require 'thread/local'
 
+require_relative 'dispatcher'
+
+class Thread
+	attr_accessor :async_job_adapter_active_job_dispatcher
+end
 
 module Async
 	module Job
 		module Adapter
 			module ActiveJob
 				class Railtie < ::Rails::Railtie
-					config.async_job = ActiveSupport::OrderedOptions.new
+					DEFAULT_REDIS = ->{
+						Async::Job::Adapter::ActiveJob::QueueAdapter.new(
+							Async::Job::Backend::Redis.new
+						)
+					}
 					
-					module Dispatcher
-						extend Thread::Local
+					def initialize
+						@backends = {default: DEFAULT_REDIS}
+						@aliases = {}
+					end
+					
+					attr :backends
+					
+					attr :aliases
+					
+					def backend_for(name, *aliases, &block)
+						@backends[name] ||= block
 						
-						def self.local
-							server = Async::Job::Backend.new(
-								**Railtie.config.async_job
-							)
-							
-							return QueueAdapter.new(server)
-						end
-						
-						def self.enqueue(job)
-							self.instance.enqueue(job)
-						end
-						
-						def self.enqueue_at(job, timestamp)
-							self.instance.enqueue_at(job, timestamp)
+						if aliases.any?
+							alias_for(name, *aliases)
 						end
 					end
 					
-					config.active_job.queue_adapter = Dispatcher
+					def alias_for(name, *aliases)
+						aliases.each do |alias_name|
+							@aliases[alias_name] = name
+						end
+					end
+					
+					# Used for dispatching jobs to a thread-local backend to avoid thread-safety issues.
+					class ThreadLocalDispatcher
+						def initialize(backends, aliases)
+							@backends = backends
+							@aliases = aliases
+						end
+						
+						def dispatcher
+							Thread.current.async_job_adapter_active_job_dispatcher ||= Dispatcher.new(@backends)
+						end
+						
+						def enqueue_at(job, timestamp)
+							dispatcher.enqueue_at(job, timestamp)
+						end
+						
+						def enqueue(job)
+							dispatcher.enqueue(job)
+						end
+						
+						def start(name)
+							dispatcher.start(name)
+						end
+					end
+					
+					def start(name = :default)
+						config.active_job.queue_adapter.start(name)
+					end
+					
+					config.async_job = self
+					config.active_job.queue_adapter = ThreadLocalDispatcher.new(self.backends, self.aliases)
 				end
 			end
 		end

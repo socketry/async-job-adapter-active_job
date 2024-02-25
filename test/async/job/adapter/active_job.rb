@@ -16,13 +16,11 @@ require 'test_job'
 describe Async::Job::Adapter::ActiveJob do
 	include Sus::Fixtures::Async::ReactorContext
 	
-	let(:server) {Async::Job::Adapter::ActiveJob::Railtie::Dispatcher.instance}
-	
 	def before
 		super
 		
 		@server_task = Async do
-			server.start
+			Async::Job::Adapter::ActiveJob::Railtie.start
 		end
 	end
 	
