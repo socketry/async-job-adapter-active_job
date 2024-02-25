@@ -25,6 +25,8 @@ module Async
 					attr :aliases
 					
 					def [](name)
+						name = name.to_sym
+						
 						@pipelines.fetch(name) do
 							backend = @backends.fetch(name)
 							@pipelines[name] = build(backend)

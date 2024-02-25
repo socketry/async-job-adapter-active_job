@@ -12,16 +12,18 @@ module Async
 				class Service < Async::Service::Generic
 					def self.each
 						yield :service_class, self
+						yield :queue_name, :default
 					end
 					
 					def setup(container)
 						container.run(name: self.name, restart: true) do |instance|
-							require File.expand_path('config/environment', @environment.evaluator.root)
+							evaluator = @environment.evaluator
+							require File.expand_path('config/environment', evaluator.root)
 							
 							instance.ready!
 							
 							Sync do
-								Railtie::Dispatcher.instance.start
+								Railtie.start(evaluator.queue_name)
 							end
 						end
 					end

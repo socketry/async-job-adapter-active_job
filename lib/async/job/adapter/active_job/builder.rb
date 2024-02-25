@@ -54,7 +54,7 @@ module Async
 						adapter = queue
 						
 						# We now construct the queue adapter:
-						adapter = @enqueue.reverse_each do |middleware|
+						@enqueue.reverse_each do |middleware|
 							adapter = middleware.new(queue)
 						end
 						
