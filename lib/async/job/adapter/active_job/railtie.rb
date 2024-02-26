@@ -31,7 +31,7 @@ module Async
 					attr :aliases
 					
 					def backend_for(name, *aliases, &block)
-						@backends[name] ||= block
+						@backends[name] = block
 						
 						if aliases.any?
 							alias_for(name, *aliases)
