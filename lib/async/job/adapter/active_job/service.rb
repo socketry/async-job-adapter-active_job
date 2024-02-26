@@ -12,7 +12,7 @@ module Async
 				class Service < Async::Service::Generic
 					def self.each
 						yield :service_class, self
-						yield :queue_name, :default
+						yield :queue_name, "default"
 					end
 					
 					def setup(container)

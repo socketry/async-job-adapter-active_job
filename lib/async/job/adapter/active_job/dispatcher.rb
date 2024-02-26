@@ -36,17 +36,17 @@ module Async
 					def enqueue(job)
 						name = @aliases.fetch(job.queue_name, job.queue_name)
 						
-						self[name].adapter.enqueue(job)
+						self[name].producer.enqueue(job)
 					end
 					
 					def enqueue_at(job, timestamp)
 						name = @aliases.fetch(job.queue_name, job.queue_name)
 						
-						self[name].adapter.enqueue_at(job, timestamp)
+						self[name].producer.enqueue_at(job, timestamp)
 					end
 					
 					def start(name)
-						self[name].queue.start
+						self[name].consumer.start
 					end
 					
 					private def build(backend)

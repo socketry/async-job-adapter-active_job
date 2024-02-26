@@ -22,7 +22,7 @@ module Async
 					end
 					
 					def initialize
-						@backends = {default: DEFAULT_PIPELINE}
+						@backends = {"default" => DEFAULT_PIPELINE}
 						@aliases = {}
 					end
 					
@@ -68,7 +68,7 @@ module Async
 						end
 					end
 					
-					def start(name = :default)
+					def start(name = "default")
 						config.active_job.queue_adapter.start(name)
 					end
 					
