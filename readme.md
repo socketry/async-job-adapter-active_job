@@ -32,7 +32,7 @@ $ bundle exec ./job-server.rb
 
 ### Configuration
 
-```ruby
+``` ruby
 Rails.application.configure do
 	config.async_job.backend_for :default, :critical do
 		queue Async::Job::Backend::Redis, endpoint: Async::IO::Endpoint.tcp('redis.local')

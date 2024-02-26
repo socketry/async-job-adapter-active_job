@@ -9,17 +9,19 @@ module Async
 	module Job
 		module Adapter
 			module ActiveJob
-				class QueueHandler
-					def initialize(coder = JSON)
-						@coder = coder
+				class Executor
+					def initialize(delegate = nil)
+						@delegate = delegate
 					end
 					
 					def call(job)
-						job = @coder.load(job)
-						Console.info(self, "Calling job...", id: job[:job_id])
+						Console.info(self, "Executing job...", id: job[:job_id])
 						::ActiveJob::Base.execute(job)
+						
+						@delegate&.call(job)
 					end
 					
+					# The default executor, at the end of the pipeline.
 					DEFAULT = self.new.freeze
 				end
 			end

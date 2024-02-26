@@ -6,7 +6,7 @@
 require 'async/job'
 require 'thread/local'
 
-require_relative 'builder'
+require 'async/job/builder'
 
 module Async
 	module Job
@@ -50,11 +50,16 @@ module Async
 					end
 					
 					private def build(backend)
-						builder = Builder.new
+						builder = Builder.new(Executor::DEFAULT)
 						
 						builder.instance_eval(&backend)
 						
-						builder.build
+						builder.build do |producer|
+							# Ensure that the producer is an interface:
+							unless producer.is_a?(Interface)
+								Interface.new(producer)
+							end
+						end
 					end
 				end
 			end

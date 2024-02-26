@@ -9,6 +9,8 @@ gemspec
 
 gem "activejob", ">= 7.1"
 
+# gem "async-job", path: "../async-job"
+
 group :test do
 	gem "sus"
 	gem "covered"

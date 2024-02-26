@@ -17,12 +17,12 @@ module Async
 		module Adapter
 			module ActiveJob
 				class Railtie < ::Rails::Railtie
-					DEFAULT_REDIS = proc do
-						queue Async::Job::Backend::Redis
+					DEFAULT_PIPELINE = proc do
+						queue Async::Job::Backend::Inline
 					end
 					
 					def initialize
-						@backends = {default: DEFAULT_REDIS}
+						@backends = {default: DEFAULT_PIPELINE}
 						@aliases = {}
 					end
 					

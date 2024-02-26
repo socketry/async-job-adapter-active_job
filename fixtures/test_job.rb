@@ -3,9 +3,25 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
-class TestJob < ActiveJob::Base
-	queue_as :default
+require 'active_job'
 
+module TestQueueAdapter
+	def self.set(queue_adapter)
+		Fiber[:active_job_test_queue_adapter] = queue_adapter
+	end
+	
+	def self.enqueue(job)
+		Fiber[:active_job_test_queue_adapter].enqueue(job)
+	end
+	
+	def self.enqueue_at(job, timestamp)
+		Fiber[:active_job_test_queue_adapter].enqueue_at(job, timestamp)
+	end
+end
+
+class TestJob < ActiveJob::Base
+	self.queue_adapter = TestQueueAdapter
+	
 	def perform(*arguments, **options)
 		Console.debug(self, "Performing job...", arguments: arguments, options: options)
 	end
