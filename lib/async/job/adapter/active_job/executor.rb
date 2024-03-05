@@ -15,7 +15,7 @@ module Async
 					end
 					
 					def call(job)
-						Console.info(self, "Executing job...", id: job["job_id"])
+						# Console.debug(self, "Executing job...", id: job["job_id"])
 						::ActiveJob::Base.execute(job)
 						
 						@delegate&.call(job)
