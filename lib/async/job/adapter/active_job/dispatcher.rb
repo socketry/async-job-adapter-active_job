@@ -3,9 +3,11 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
+require_relative 'executor'
+require_relative 'interface'
+
 require 'async/job'
 require 'thread/local'
-
 require 'async/job/builder'
 
 module Async
