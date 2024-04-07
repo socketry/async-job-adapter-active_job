@@ -4,6 +4,7 @@
 # Copyright, 2024, by Samuel Williams.
 
 require 'active_job'
+require 'fiber/storage'
 
 module TestQueueAdapter
 	def self.set(queue_adapter)

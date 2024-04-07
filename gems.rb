@@ -21,6 +21,8 @@ group :test do
 	gem "bake-test-external"
 	
 	gem "rails", "~> 7.1"
+	
+	gem "fiber-storage"
 end
 
 group :maintenance, optional: true do
