@@ -8,9 +8,7 @@ require 'thread/local'
 
 require_relative 'dispatcher'
 
-class Thread
-	attr_accessor :async_job_adapter_active_job_dispatcher
-end
+Thread.attr_accessor :async_job_adapter_active_job_dispatcher
 
 module Async
 	module Job
@@ -36,7 +34,7 @@ module Async
 					
 					# Define a new backend for processing jobs.
 					# @parameter name [String] The name of the backend.
-					# @parameter aliases [Array<String>] The aliases for the backend.
+					# @parameter aliases [Array(String)] The aliases for the backend.
 					# @parameter block [Proc] The block that defines the backend.
 					def backend_for(name, *aliases, &block)
 						@backends[name] = block
