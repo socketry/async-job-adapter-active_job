@@ -1,12 +1,19 @@
-#!/usr/bin/env async-service
+#!/usr/bin/env ruby
+
+require 'async/service/configuration'
+require 'async/service/controller'
 
 require 'async/job/adapter/active_job/environment'
 
-service "async-job-server" do
-	include Async::Job::Adapter::ActiveJob::Environment
-	
-	root {ENV.fetch('RAILS_ROOT', Dir.pwd)}
-	
-	# If you have multiple queues, you may want to run a separate server for each queue.
-	queue_name ENV.fetch('ASYNC_JOB_ADAPTER_ACTIVE_JOB_QUEUE_NAME', 'default')
+configuration = Async::Service::Configuration.build do
+	service "async-job-server" do
+		include Async::Job::Adapter::ActiveJob::Environment
+		
+		root {ENV.fetch('RAILS_ROOT', Dir.pwd)}
+		
+		# If you have multiple queues, you may want to run a separate server for each queue.
+		queue_name ENV.fetch('ASYNC_JOB_ADAPTER_ACTIVE_JOB_QUEUE_NAME', 'default')
+	end
 end
+
+Async::Service::Controller.run(configuration)
