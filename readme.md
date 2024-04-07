@@ -6,29 +6,9 @@ Provides an adapter for ActiveJob on top of `Async::Job`.
 
 ## Usage
 
-Basically, just add this gem to your gemfile:
+Please see the [project documentation](https://socketry.github.io/async-job-adapter-active_job/) for more details.
 
-``` shell
-$ bundle add async-job-adapter-active_job
-```
-
-To run a server, create a service file, e.g. `job-server.rb` with the following content:
-
-``` ruby
-#!/usr/bin/env async-service
-
-require 'async/job/adapter/active_job/service'
-
-service "job-server" do
-	include Async::Job::Adapter::ActiveJob::Service
-end
-```
-
-Then run it:
-
-``` shell
-$ bundle exec ./job-server.rb
-```
+  - [Getting Started](https://socketry.github.io/async-job-adapter-active_job/guides/getting-started/index) - This guide explains how to get started with the `async-job-active_job-adapter` gem.
 
 ### Configuration
 

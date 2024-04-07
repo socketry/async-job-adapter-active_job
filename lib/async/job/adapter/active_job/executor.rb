@@ -9,11 +9,13 @@ module Async
 	module Job
 		module Adapter
 			module ActiveJob
+				# An executor for processing jobs using `ActiveJob`.
 				class Executor
 					def initialize(delegate = nil)
 						@delegate = delegate
 					end
 					
+					# Execute the given job.
 					def call(job)
 						# Console.debug(self, "Executing job...", id: job["job_id"])
 						::ActiveJob::Base.execute(job)

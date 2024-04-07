@@ -9,11 +9,14 @@ module Async
 	module Job
 		module Adapter
 			module ActiveJob
+				# The environment for the ActiveJob server.
 				module Environment
+					# The service class to use.
 					def service_class
 						Service
 					end
 					
+					# The name of the queue to use.
 					def queue_name
 						"default"
 					end

@@ -13,8 +13,11 @@ Gem::Specification.new do |spec|
 	spec.cert_chain  = ['release.cert']
 	spec.signing_key = File.expand_path('~/.gem/release.pem')
 	
+	spec.homepage = "https://github.com/socketry/async-job-adapter-active_job"
+	
 	spec.metadata = {
-		"documentation_uri" => "https://socketry.github.io/async-job-adapter-active_job",
+		"documentation_uri" => "https://socketry.github.io/async-job-adapter-active_job/",
+		"source_code_uri" => "https://github.com/socketry/async-job-adapter-active_job.git",
 	}
 	
 	spec.files = Dir['{lib}/**/*', '*.md', base: __dir__]

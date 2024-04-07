@@ -14,7 +14,11 @@ module Async
 	module Job
 		module Adapter
 			module ActiveJob
+				# A dispatcher for managing multiple backends.
 				class Dispatcher
+					# Prepare the dispacher with the given backends and aliases.
+					# @parameter backends [Hash(String, Proc)] The backends to use for processing jobs.
+					# @parameter aliases [Hash(String, Proc)] The aliases for the backends.
 					def initialize(backends, aliases = {})
 						@backends = backends
 						@aliases = aliases
@@ -22,10 +26,14 @@ module Async
 						@pipelines = {}
 					end
 					
+					# @attribute [Hash(String, Proc)] The backends to use for processing jobs.
 					attr :backends
 					
+					# @attribute [Hash(String, String)] The aliases for the backends.
 					attr :aliases
 					
+					# Lookup a pipeline by name, constructing it if necessary using the given backend.
+					# @parameter name [String] The name of the pipeline/backend.
 					def [](name)
 						@pipelines.fetch(name) do
 							backend = @backends.fetch(name)
@@ -33,18 +41,21 @@ module Async
 						end
 					end
 					
+					# Enqueue a job for processing.
 					def enqueue(job)
 						name = @aliases.fetch(job.queue_name, job.queue_name)
 						
 						self[name].producer.enqueue(job)
 					end
 					
+					# Enqueue a job for processing at a specific time.
 					def enqueue_at(job, timestamp)
 						name = @aliases.fetch(job.queue_name, job.queue_name)
 						
 						self[name].producer.enqueue_at(job, timestamp)
 					end
 					
+					# Start processing jobs in the given pipeline.
 					def start(name)
 						self[name].consumer.start
 					end

@@ -9,7 +9,9 @@ module Async
 	module Job
 		module Adapter
 			module ActiveJob
+				# A job server that can be run as a service.
 				class Service < Async::Service::Generic
+					# Load the Rails environment and start the job server.
 					def setup(container)
 						container.run(name: self.name, restart: true) do |instance|
 							evaluator = @environment.evaluator
