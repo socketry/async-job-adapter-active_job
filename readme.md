@@ -10,22 +10,6 @@ Please see the [project documentation](https://socketry.github.io/async-job-adap
 
   - [Getting Started](https://socketry.github.io/async-job-adapter-active_job/guides/getting-started/index) - This guide explains how to get started with the `async-job-active_job-adapter` gem.
 
-### Configuration
-
-``` ruby
-Rails.application.configure do
-	config.async_job.backend_for :default, :critical do
-		queue Async::Job::Backend::Redis, endpoint: Async::IO::Endpoint.tcp('redis.local')
-	end
-	
-	config.async_job.aliases_for :default, :email
-	
-	config.async_job.backend_for :local do
-		queue Async::Job::Backend::Inline
-	end
-end
-```
-
 ## Contributing
 
 We welcome contributions to this project.
