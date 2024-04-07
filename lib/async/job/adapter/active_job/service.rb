@@ -10,20 +10,6 @@ module Async
 		module Adapter
 			module ActiveJob
 				class Service < Async::Service::Generic
-					module Environment
-						def service_class
-							Service
-						end
-						
-						def queue_name
-							"default"
-						end
-					end
-					
-					def self.included(base)
-						base.include(Environment)
-					end
-					
 					def setup(container)
 						container.run(name: self.name, restart: true) do |instance|
 							evaluator = @environment.evaluator
