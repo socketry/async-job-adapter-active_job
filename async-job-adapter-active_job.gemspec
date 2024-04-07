@@ -20,9 +20,11 @@ Gem::Specification.new do |spec|
 		"source_code_uri" => "https://github.com/socketry/async-job-adapter-active_job.git",
 	}
 	
-	spec.files = Dir['{lib}/**/*', '*.md', base: __dir__]
+	spec.files = Dir['{bin,lib}/**/*', '*.md', base: __dir__]
 	
-	spec.required_ruby_version = ">= 3.0"
+	spec.executables = ["async-job-adapter-active_job-server"]
+	
+	spec.required_ruby_version = ">= 3.1"
 	
 	spec.add_dependency "async-job", "~> 0.5"
 	spec.add_dependency "async-service", "~> 0.8"
