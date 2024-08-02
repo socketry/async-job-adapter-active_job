@@ -85,8 +85,10 @@ module Async
 						config.active_job.queue_adapter.start(name)
 					end
 					
+					DEFAULT_QUEUE_ADAPTER = ThreadLocalDispatcher.new(self.backends, self.aliases)
+					
 					config.async_job = self
-					config.active_job.queue_adapter = ThreadLocalDispatcher.new(self.backends, self.aliases)
+					config.active_job.queue_adapter = DEFAULT_QUEUE_ADAPTER
 				end
 			end
 		end
