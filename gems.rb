@@ -11,9 +11,18 @@ gem "activejob", ">= 7.1"
 
 # gem "async-job", path: "../async-job"
 
+group :maintenance, optional: true do
+	gem "bake-gem"
+	gem "bake-modernize"
+	
+	gem "utopia-project"
+end
+
 group :test do
 	gem "sus"
 	gem "covered"
+	gem "decode"
+	gem "rubocop"
 	
 	gem 'sus-fixtures-async'
 	
@@ -23,11 +32,4 @@ group :test do
 	gem "rails", "~> 7.1"
 	
 	gem "fiber-storage"
-end
-
-group :maintenance, optional: true do
-	gem "bake-gem"
-	gem "bake-modernize"
-	
-	gem "utopia-project"
 end
