@@ -4,6 +4,8 @@
 # Copyright, 2024, by Samuel Williams.
 
 require 'async/job'
+require 'async/job/backend/inline'
+
 require 'thread/local'
 
 require_relative 'dispatcher'
@@ -18,7 +20,7 @@ module Async
 				class Railtie < ::Rails::Railtie
 					# The default pipeline for processing jobs, using the `Inline` backend.
 					DEFAULT_PIPELINE = proc do
-						queue Async::Job::Backend::Inline
+						queue Backend::Inline
 					end
 					
 					def initialize
