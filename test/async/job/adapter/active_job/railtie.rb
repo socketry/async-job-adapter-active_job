@@ -12,10 +12,10 @@ describe Async::Job::Adapter::ActiveJob::Railtie do
 	end
 	
 	it "defaults to inline backend" do
-		dispatcher = Async::Job::Adapter::ActiveJob::Dispatcher.new(subject.backends, subject.aliases)
+		dispatcher = Async::Job::Adapter::ActiveJob::Dispatcher.new(subject.definitions, subject.aliases)
 		
-		pipeline = dispatcher["default"]
-		expect(pipeline.producer).to be_a(Async::Job::Adapter::ActiveJob::Interface)
-		expect(pipeline.consumer).to be_a(Async::Job::Backend::Inline::Server)
+		queue = dispatcher["default"]
+		expect(queue.client).to be_a(Async::Job::Adapter::ActiveJob::Interface)
+		expect(queue.server).to be_a(Async::Job::Processor::Inline)
 	end
 end

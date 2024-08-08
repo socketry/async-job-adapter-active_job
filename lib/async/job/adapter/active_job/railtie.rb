@@ -4,7 +4,7 @@
 # Copyright, 2024, by Samuel Williams.
 
 require 'async/job'
-require 'async/job/backend/inline'
+require 'async/job/processor/inline'
 
 require 'thread/local'
 
@@ -19,27 +19,27 @@ module Async
 				# A Rails-specific adapter for `ActiveJob` that allows you to use `Async::Job` as the backend.
 				class Railtie < ::Rails::Railtie
 					# The default pipeline for processing jobs, using the `Inline` backend.
-					DEFAULT_PIPELINE = proc do
-						queue Backend::Inline
+					DEFAULT_QUEUE_DEFINITION = proc do
+						dequeue Processor::Inline
 					end
 					
 					def initialize
-						@backends = {"default" => DEFAULT_PIPELINE}
+						@definitions = {"default" => DEFAULT_QUEUE_DEFINITION}
 						@aliases = {}
 					end
 					
-					# The backends that are available for processing jobs.
-					attr :backends
+					# The queues that are available for processing jobs.
+					attr :definitions
 					
-					# The aliases for the backends.
+					# The aliases for the definitions, if any.
 					attr :aliases
 					
 					# Define a new backend for processing jobs.
 					# @parameter name [String] The name of the backend.
 					# @parameter aliases [Array(String)] The aliases for the backend.
 					# @parameter block [Proc] The block that defines the backend.
-					def backend_for(name, *aliases, &block)
-						@backends[name] = block
+					def queue_for(name, *aliases, &block)
+						@definitions[name] = block
 						
 						if aliases.any?
 							alias_for(name, *aliases)
@@ -55,14 +55,14 @@ module Async
 					
 					# Used for dispatching jobs to a thread-local backend to avoid thread-safety issues.
 					class ThreadLocalDispatcher
-						def initialize(backends, aliases)
-							@backends = backends
+						def initialize(definitions, aliases)
+							@definitions = definitions
 							@aliases = aliases
 						end
 						
 						# The dispatcher for the current thread.
 						def dispatcher
-							Thread.current.async_job_adapter_active_job_dispatcher ||= Dispatcher.new(@backends)
+							Thread.current.async_job_adapter_active_job_dispatcher ||= Dispatcher.new(@definitions, @aliases)
 						end
 						
 						# Enqueue a job to be processed at a specific time.
@@ -87,10 +87,11 @@ module Async
 						config.active_job.queue_adapter.start(name)
 					end
 					
-					DEFAULT_QUEUE_ADAPTER = ThreadLocalDispatcher.new(self.backends, self.aliases)
+					DEFAULT_DISPATCHER = ThreadLocalDispatcher.new(self.definitions, self.aliases)
 					
 					config.async_job = self
-					config.active_job.queue_adapter = DEFAULT_QUEUE_ADAPTER
+					
+					config.active_job.queue_adapter = DEFAULT_DISPATCHER
 				end
 			end
 		end

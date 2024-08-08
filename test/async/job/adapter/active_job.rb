@@ -4,7 +4,7 @@
 # Copyright, 2024, by Samuel Williams.
 
 require 'async/job/adapter/active_job'
-require 'async/job/backend/inline'
+require 'async/job/processor/inline'
 require 'async/job/buffer'
 
 require 'sus/fixtures/async/reactor_context'
@@ -18,12 +18,12 @@ describe Async::Job::Adapter::ActiveJob do
 	let(:pipeline) do
 		Async::Job::Builder.build(buffer) do
 			enqueue Async::Job::Adapter::ActiveJob::Interface
-			queue Async::Job::Backend::Inline
+			dequeue Async::Job::Processor::Inline
 		end
 	end
 	
 	it "can schedule a job" do
-		TestQueueAdapter.set(pipeline.producer)
+		TestQueueAdapter.set(pipeline.client)
 		
 		job = TestJob.perform_later
 		

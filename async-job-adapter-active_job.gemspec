@@ -26,7 +26,7 @@ Gem::Specification.new do |spec|
 	
 	spec.required_ruby_version = ">= 3.1"
 	
-	spec.add_dependency "async-job", "~> 0.6"
+	spec.add_dependency "async-job", "~> 0.9"
 	spec.add_dependency "async-service", "~> 0.12"
 	spec.add_dependency "thread-local"
 end

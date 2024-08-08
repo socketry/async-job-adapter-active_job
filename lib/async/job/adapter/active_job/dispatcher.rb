@@ -14,30 +14,30 @@ module Async
 	module Job
 		module Adapter
 			module ActiveJob
-				# A dispatcher for managing multiple backends.
+				# A dispatcher for managing multiple definitions.
 				class Dispatcher
-					# Prepare the dispacher with the given backends and aliases.
-					# @parameter backends [Hash(String, Proc)] The backends to use for processing jobs.
-					# @parameter aliases [Hash(String, Proc)] The aliases for the backends.
-					def initialize(backends, aliases = {})
-						@backends = backends
+					# Prepare the dispacher with the given definitions and aliases.
+					# @parameter definitions [Hash(String, Proc)] The definitions to use constructing queues.
+					# @parameter aliases [Hash(String, Proc)] The aliases for the definitions.
+					def initialize(definitions, aliases = {})
+						@definitions = definitions
 						@aliases = aliases
 						
-						@pipelines = {}
+						@queues = {}
 					end
 					
-					# @attribute [Hash(String, Proc)] The backends to use for processing jobs.
-					attr :backends
+					# @attribute [Hash(String, Proc)] The definitions to use for processing jobs.
+					attr :definitions
 					
-					# @attribute [Hash(String, String)] The aliases for the backends.
+					# @attribute [Hash(String, String)] The aliases for the definitions.
 					attr :aliases
 					
 					# Lookup a pipeline by name, constructing it if necessary using the given backend.
 					# @parameter name [String] The name of the pipeline/backend.
 					def [](name)
-						@pipelines.fetch(name) do
-							backend = @backends.fetch(name)
-							@pipelines[name] = build(backend)
+						@queues.fetch(name) do
+							definition = @definitions.fetch(name)
+							@queues[name] = build(definition)
 						end
 					end
 					
@@ -45,30 +45,30 @@ module Async
 					def enqueue(job)
 						name = @aliases.fetch(job.queue_name, job.queue_name)
 						
-						self[name].producer.enqueue(job)
+						self[name].client.enqueue(job)
 					end
 					
 					# Enqueue a job for processing at a specific time.
 					def enqueue_at(job, timestamp)
 						name = @aliases.fetch(job.queue_name, job.queue_name)
 						
-						self[name].producer.enqueue_at(job, timestamp)
+						self[name].client.enqueue_at(job, timestamp)
 					end
 					
 					# Start processing jobs in the given pipeline.
 					def start(name)
-						self[name].consumer.start
+						self[name].server.start
 					end
 					
-					private def build(backend)
+					private def build(definition)
 						builder = Builder.new(Executor::DEFAULT)
 						
-						builder.instance_eval(&backend)
+						builder.instance_eval(&definition)
 						
-						builder.build do |producer|
-							# Ensure that the producer is an interface:
-							unless producer.is_a?(Interface)
-								Interface.new(producer)
+						builder.build do |client|
+							# Ensure that the client is an interface:
+							unless client.is_a?(Interface)
+								Interface.new(client)
 							end
 						end
 					end
