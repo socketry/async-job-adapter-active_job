@@ -34,12 +34,12 @@ require 'async/job/procossor/inline'
 
 Rails.application.configure do
 	# Create a queue for the "default" backend:
-	config.async_job.queue_for "default" do
+	config.async_job.define_queue "default" do
 		queue Async::Job::Processor::Redis
 	end
 	
 	# Create a queue named "local" which uses the Inline backend:
-	config.async_job.queue_for "local" do
+	config.async_job.define_queue "local" do
 		queue Async::Job::Processor::Inline
 	end
 end
