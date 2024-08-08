@@ -13,15 +13,15 @@ describe Async::Job::Adapter::ActiveJob do
 	
 	let(:buffer) {Async::Job::Buffer.new}
 	
-	let(:pipeline) do
+	let(:queue) do
 		Async::Job::Builder.build(buffer) do
 			enqueue Async::Job::Adapter::ActiveJob::Interface
-			queue Async::Job::Processor::Redis
+			dequeue Async::Job::Processor::Redis
 		end
 	end
 	
 	before do
-		TestQueueAdapter.set(pipeline.client)
+		TestQueueAdapter.set(queue.client)
 	end
 	
 	it "should enqueue jobs" do

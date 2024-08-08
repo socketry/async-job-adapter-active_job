@@ -16,9 +16,9 @@ module Async
 	module Job
 		module Adapter
 			module ActiveJob
-				# A Rails-specific adapter for `ActiveJob` that allows you to use `Async::Job` as the backend.
+				# A Rails-specific adapter for `ActiveJob` that allows you to use `Async::Job` as the queue.
 				class Railtie < ::Rails::Railtie
-					# The default pipeline for processing jobs, using the `Inline` backend.
+					# The default queue definition for processing jobs, using the `Inline` backend.
 					DEFAULT_QUEUE_DEFINITION = proc do
 						dequeue Processor::Inline
 					end
@@ -46,14 +46,14 @@ module Async
 						end
 					end
 					
-					# Define an alias for a backend.
+					# Define an alias for a queue.
 					def alias_for(name, *aliases)
 						aliases.each do |alias_name|
 							@aliases[alias_name] = name
 						end
 					end
 					
-					# Used for dispatching jobs to a thread-local backend to avoid thread-safety issues.
+					# Used for dispatching jobs to a thread-local queue to avoid thread-safety issues.
 					class ThreadLocalDispatcher
 						def initialize(definitions, aliases)
 							@definitions = definitions
@@ -76,7 +76,7 @@ module Async
 						end
 						
 						# Start processing jobs in the queue with the given name.
-						# @parameter name [String] The name of the backend.
+						# @parameter name [String] The name of the queue.
 						def start(name)
 							dispatcher.start(name)
 						end

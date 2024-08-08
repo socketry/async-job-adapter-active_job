@@ -32,8 +32,8 @@ module Async
 					# @attribute [Hash(String, String)] The aliases for the definitions.
 					attr :aliases
 					
-					# Lookup a pipeline by name, constructing it if necessary using the given backend.
-					# @parameter name [String] The name of the pipeline/backend.
+					# Look up a queue by name, constructing it if necessary using the given definition.
+					# @parameter name [String] The name of the queue.
 					def [](name)
 						@queues.fetch(name) do
 							definition = @definitions.fetch(name)
@@ -55,7 +55,7 @@ module Async
 						self[name].client.enqueue_at(job, timestamp)
 					end
 					
-					# Start processing jobs in the given pipeline.
+					# Start processing jobs in the given queue.
 					def start(name)
 						self[name].server.start
 					end

@@ -14,10 +14,10 @@ $ bundle add async-job-active_job-adapter
 
 The `async-job-active_job-adapter` gem provides an Active Job adapter for the `async-job` gem. This allows you to use the `async-job` gem with Rails' built-in Active Job framework.
 
-- The {ruby Async::Job::ActiveJob::Dispatcher} class manages zero or more pipelines, which consist of job queueing and job processing.
+- The {ruby Async::Job::ActiveJob::Dispatcher} class manages zero or more queues.
 - The {ruby Async::Job::ActiveJob::Railtie} class provides a convenient interface for configuring the integration.
 
-In general, `Async::Job` has a concept of queues, where jobs enter into a queue, may get serialized to a backend, then deserialized and processed. This ActiveJob adapter provides {ruby Async::Job::ActiveJob::Interface} which goes at the head of the queue, and matches the interface that ActiveJob expects for enqueueing jobs. At the tail of the queue, the {ruby Async::Job::ActiveJob::Executor} class is responsible for processing jobs by dispatching back into ActiveJob.
+In general, `Async::Job` has a concept of queues, where jobs enter into a queue, may get serialized to a queue, then deserialized and processed. This ActiveJob adapter provides {ruby Async::Job::ActiveJob::Interface} which goes at the head of the queue, and matches the interface that ActiveJob expects for enqueueing jobs. At the tail of the queue, the {ruby Async::Job::ActiveJob::Executor} class is responsible for processing jobs by dispatching back into ActiveJob.
 
 ## Usage
 
@@ -45,11 +45,11 @@ Rails.application.configure do
 end
 ```
 
-This configuration sets up two queues: one for the Redis backend and one for the Inline backend.
+This configuration sets up two queues: one for the Redis queue and one for the Inline queue.
 
 ### Running A Server
 
-If you are using a backend that requires a server (e.g. Redis), you will need to run a server. A simple server is provided `async-job-adapter-active_job-server`, which supports running a single queue. You can run this server with the following command:
+If you are using a queue that requires a server (e.g. Redis), you will need to run a server. A simple server is provided `async-job-adapter-active_job-server`, which supports running a single queue. You can run this server with the following command:
 
 ``` bash
 $ bundle exec async-job-adapter-active_job-server

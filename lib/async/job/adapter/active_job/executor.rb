@@ -31,7 +31,7 @@ module Async
 						@delegate&.stop
 					end
 					
-					# The default executor, at the end of the pipeline.
+					# The default executor, for use at the end of the queue.
 					DEFAULT = self.new.freeze
 				end
 			end

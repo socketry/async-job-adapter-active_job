@@ -7,7 +7,7 @@ module Async
 	module Job
 		module Adapter
 			module ActiveJob
-				# An interface for `ActiveJob` that allows you to use `Async::Job` as the backend.
+				# An interface for `ActiveJob` that allows you to use `Async::Job` as the queue.
 				class Interface
 					def initialize(delegate)
 						@delegate = delegate

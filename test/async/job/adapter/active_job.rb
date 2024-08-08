@@ -15,7 +15,7 @@ describe Async::Job::Adapter::ActiveJob do
 	
 	let(:buffer) {Async::Job::Buffer.new}
 	
-	let(:pipeline) do
+	let(:queue) do
 		Async::Job::Builder.build(buffer) do
 			enqueue Async::Job::Adapter::ActiveJob::Interface
 			dequeue Async::Job::Processor::Inline
@@ -23,7 +23,7 @@ describe Async::Job::Adapter::ActiveJob do
 	end
 	
 	it "can schedule a job" do
-		TestQueueAdapter.set(pipeline.client)
+		TestQueueAdapter.set(queue.client)
 		
 		job = TestJob.perform_later
 		
