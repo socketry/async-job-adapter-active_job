@@ -23,6 +23,14 @@ module Async
 						@delegate&.call(job)
 					end
 					
+					def start
+						@delegate&.start
+					end
+					
+					def stop
+						@delegate&.stop
+					end
+					
 					# The default executor, at the end of the pipeline.
 					DEFAULT = self.new.freeze
 				end
