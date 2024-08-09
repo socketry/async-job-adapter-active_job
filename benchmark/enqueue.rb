@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 require 'sus/fixtures/async/reactor_context'
 
 require 'async/job'
