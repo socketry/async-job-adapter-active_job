@@ -8,10 +8,12 @@ require 'async/job/processor/inline'
 require 'async/job/buffer'
 
 require 'sus/fixtures/async/reactor_context'
+require 'sus/fixtures/console/captured_logger'
 require 'test_job'
 
 describe Async::Job::Adapter::ActiveJob do
 	include Sus::Fixtures::Async::ReactorContext
+	include Sus::Fixtures::Console::CapturedLogger
 	
 	let(:buffer) {Async::Job::Buffer.new}
 	
@@ -19,6 +21,7 @@ describe Async::Job::Adapter::ActiveJob do
 		Async::Job::Builder.build(buffer) do
 			enqueue Async::Job::Adapter::ActiveJob::Interface
 			dequeue Async::Job::Processor::Inline
+			dequeue Async::Job::Adapter::ActiveJob::Executor
 		end
 	end
 	
@@ -32,6 +35,23 @@ describe Async::Job::Adapter::ActiveJob do
 			"job_class"  => be == "TestJob",
 			"queue_name" => be == "default",
 			"arguments"  => be == [], 
+		)
+	end
+	
+	it "retries a failed job" do
+		TestQueueAdapter.set(queue.client)
+		
+		job = BadJob.perform_later
+		
+		expect(buffer.pop).to have_keys(
+			"job_id"     => be == job.job_id,
+			"job_class"  => be == "BadJob",
+			"queue_name" => be == "default",
+			"arguments"  => be == [],
+		)
+		
+		expect_console.to have_logged(
+			message: be =~ /Error performing BadJob/,
 		)
 	end
 end

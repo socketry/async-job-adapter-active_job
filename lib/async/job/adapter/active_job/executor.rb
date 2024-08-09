@@ -17,8 +17,14 @@ module Async
 					
 					# Execute the given job.
 					def call(job)
-						# Console.debug(self, "Executing job...", id: job["job_id"])
-						::ActiveJob::Base.execute(job)
+						Console.debug(self, "Executing job...", job: job)
+						begin
+							::ActiveJob::Base.execute(job)
+						rescue => error
+							# Error handling is done by the job itself.
+							# Ignore the error here, as ActiveJob has already logged unhandled errors.
+							# Console::Event::Failure.for(error).emit(self, "Failed to execute job!", job: job)
+						end
 						
 						@delegate&.call(job)
 					end

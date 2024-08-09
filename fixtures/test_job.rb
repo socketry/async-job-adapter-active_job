@@ -27,3 +27,12 @@ class TestJob < ActiveJob::Base
 		Console.debug(self, "Performing job...", arguments: arguments, options: options)
 	end
 end
+
+class BadJob < ActiveJob::Base
+	self.queue_adapter = TestQueueAdapter
+	
+	def perform(*arguments, **options)
+		Console.debug(self, "Performing job...", arguments: arguments, options: options)
+		raise "This job is bad!"
+	end
+end
