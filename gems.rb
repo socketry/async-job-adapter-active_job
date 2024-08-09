@@ -7,8 +7,9 @@ source "https://rubygems.org"
 
 gemspec
 
-gem "activejob", ">= 7.1"
-
+# gem "activejob", ">= 7.1"
+# gem "rails", path: "../../ioquatix/rails"
+# gem "activejob", path: "../../ioquatix/rails/activejob"
 # gem "async-job", path: "../async-job"
 
 group :maintenance, optional: true do
