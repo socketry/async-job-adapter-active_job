@@ -55,7 +55,7 @@ If you are using a queue that requires a server (e.g. Redis), you will need to r
 $ bundle exec async-job-adapter-active_job-server
 ```
 
-You can specify a different queue name using  the`ASYNC_JOB_ADAPTER_ACTIVE_JOB_QUEUE_NAME` environment variable.
+You can specify a different queue name using the `ASYNC_JOB_ADAPTER_ACTIVE_JOB_QUEUE_NAME` environment variable.
 
 Alternatively, you may prefer to run your own service. See the code in `bin/async-job-adapter-active_job-server` for an example of how to run a server using a service definition.
 
