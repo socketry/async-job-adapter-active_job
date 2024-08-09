@@ -39,6 +39,8 @@ module Async
 					# @parameter aliases [Array(String)] The aliases for the backend.
 					# @parameter block [Proc] The block that defines the backend.
 					def define_queue(name, *aliases, &block)
+						name = name.to_s
+						
 						@definitions[name] = block
 						
 						if aliases.any?
@@ -49,6 +51,8 @@ module Async
 					# Define an alias for a queue.
 					def alias_queue(name, *aliases)
 						aliases.each do |alias_name|
+							alias_name = alias_name.to_s
+							
 							@aliases[alias_name] = name
 						end
 					end
