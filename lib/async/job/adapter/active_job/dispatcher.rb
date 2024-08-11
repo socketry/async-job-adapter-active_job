@@ -50,6 +50,10 @@ module Async
 						self[name].server.start
 					end
 					
+					def keys
+						@definitions.keys
+					end
+					
 					private def build(definition)
 						builder = Builder.new(Executor::DEFAULT)
 						

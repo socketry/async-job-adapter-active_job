@@ -44,6 +44,11 @@ module Async
 					def start(name)
 						dispatcher.start(name)
 					end
+					
+					# The names of all the queues that are available for processing jobs.
+					def keys
+						@definitions.keys
+					end
 				end
 			end
 		end

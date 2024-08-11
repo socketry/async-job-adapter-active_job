@@ -16,9 +16,21 @@ module Async
 						Service
 					end
 					
+					def root
+						ENV.fetch('RAILS_ROOT', Dir.pwd)
+					end
+					
+					def dispatcher
+						Railtie.dispatcher
+					end
+					
 					# The name of the queue to use.
-					def queue_name
-						"default"
+					def queue_names
+						if queue_names = ENV['ASYNC_JOB_ADAPTER_ACTIVE_JOB_QUEUE_NAMES']
+							queue_names.split(',')
+						else
+							dispatcher.keys
+						end
 					end
 				end
 			end

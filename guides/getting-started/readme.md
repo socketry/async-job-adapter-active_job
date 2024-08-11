@@ -62,13 +62,13 @@ end
 
 ### Running A Server
 
-If you are using a queue that requires a server (e.g. Redis), you will need to run a server. A simple server is provided `async-job-adapter-active_job-server`, which supports running a single queue. You can run this server with the following command:
+If you are using a queue that requires a server (e.g. Redis), you will need to run a server. A simple server is provided `async-job-adapter-active_job-server`, which by default will run all define queues.
 
 ``` bash
 $ bundle exec async-job-adapter-active_job-server
 ```
 
-You can specify a different queue name using the `ASYNC_JOB_ADAPTER_ACTIVE_JOB_QUEUE_NAME` environment variable.
+You can specify different queues using the `ASYNC_JOB_ADAPTER_ACTIVE_JOB_QUEUE_NAMES` environment variable.
 
 Alternatively, you may prefer to run your own service. See the code in `bin/async-job-adapter-active_job-server` for an example of how to run a server using a service definition.
 
