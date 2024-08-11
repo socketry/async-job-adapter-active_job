@@ -4,7 +4,6 @@
 # Copyright, 2024, by Samuel Williams.
 
 require_relative 'executor'
-require_relative 'interface'
 
 require 'async/job'
 require 'async/job/builder'
@@ -40,18 +39,10 @@ module Async
 						end
 					end
 					
-					# Enqueue a job for processing.
-					def enqueue(job)
+					def call(job)
 						name = @aliases.fetch(job.queue_name, job.queue_name)
 						
-						self[name].client.enqueue(job)
-					end
-					
-					# Enqueue a job for processing at a specific time.
-					def enqueue_at(job, timestamp)
-						name = @aliases.fetch(job.queue_name, job.queue_name)
-						
-						self[name].client.enqueue_at(job, timestamp)
+						self[name].client.call(job.serialize)
 					end
 					
 					# Start processing jobs in the given queue.
@@ -64,12 +55,7 @@ module Async
 						
 						builder.instance_eval(&definition)
 						
-						builder.build do |client|
-							# Ensure that the client is an interface:
-							unless client.is_a?(Interface)
-								Interface.new(client)
-							end
-						end
+						return builder.build
 					end
 				end
 			end

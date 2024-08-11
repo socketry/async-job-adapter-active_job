@@ -6,9 +6,7 @@
 require 'async/job'
 require 'async/job/processor/inline'
 
-require_relative 'dispatcher'
-
-Thread.attr_accessor :async_job_adapter_active_job_dispatcher
+require_relative 'thread_local_dispatcher'
 
 module Async
 	module Job
@@ -24,6 +22,8 @@ module Async
 					def initialize
 						@definitions = {"default" => DEFAULT_QUEUE_DEFINITION}
 						@aliases = {}
+						
+						@dispatcher = ThreadLocalDispatcher.new(@definitions, @aliases)
 					end
 					
 					# The queues that are available for processing jobs.
@@ -31,6 +31,9 @@ module Async
 					
 					# The aliases for the definitions, if any.
 					attr :aliases
+					
+					# Thed default dispatcher for processing jobs.
+					attr :dispatcher
 					
 					# Define a new backend for processing jobs.
 					# @parameter name [String] The name of the backend.
@@ -55,45 +58,12 @@ module Async
 						end
 					end
 					
-					# Used for dispatching jobs to a thread-local queue to avoid thread-safety issues.
-					class ThreadLocalDispatcher
-						def initialize(definitions, aliases)
-							@definitions = definitions
-							@aliases = aliases
-						end
-						
-						# The dispatcher for the current thread.
-						def dispatcher
-							Thread.current.async_job_adapter_active_job_dispatcher ||= Dispatcher.new(@definitions, @aliases)
-						end
-						
-						# Enqueue a job to be processed at a specific time.
-						def enqueue_at(job, timestamp)
-							dispatcher.enqueue_at(job, timestamp)
-						end
-						
-						# Enqueue a job to be processed as soon as possible.
-						def enqueue(job)
-							dispatcher.enqueue(job)
-						end
-						
-						# Start processing jobs in the queue with the given name.
-						# @parameter name [String] The name of the queue.
-						def start(name)
-							dispatcher.start(name)
-						end
-					end
-					
 					# Start the job server with the given name.
 					def start(name = "default")
-						config.active_job.queue_adapter.start(name)
+						@dispatcher.start(name)
 					end
 					
-					DEFAULT_DISPATCHER = ThreadLocalDispatcher.new(self.definitions, self.aliases)
-					
 					config.async_job = self
-					
-					config.active_job.queue_adapter = DEFAULT_DISPATCHER
 				end
 			end
 		end

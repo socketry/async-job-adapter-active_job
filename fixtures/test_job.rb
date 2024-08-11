@@ -7,16 +7,26 @@ require 'active_job'
 require 'fiber/storage'
 
 module TestQueueAdapter
-	def self.set(queue_adapter)
-		Fiber[:active_job_test_queue_adapter] = queue_adapter
+	class Dispatcher
+		def initialize(queues = {})
+			@queues = queues
+		end
+		
+		def call(job)
+			@queues[job.queue_name].call(job.serialize)
+		end
+	end
+	
+	def self.set(...)
+		Fiber[:active_job_test_queue_adapter] = Dispatcher.new(...)
 	end
 	
 	def self.enqueue(job)
-		Fiber[:active_job_test_queue_adapter].enqueue(job)
+		Fiber[:active_job_test_queue_adapter].call(job)
 	end
 	
 	def self.enqueue_at(job, timestamp)
-		Fiber[:active_job_test_queue_adapter].enqueue_at(job, timestamp)
+		Fiber[:active_job_test_queue_adapter].call(job)
 	end
 end
 
