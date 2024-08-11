@@ -4,8 +4,12 @@
 # Copyright, 2024, by Samuel Williams.
 
 require 'json'
+
 require 'console'
 require 'console/event/failure'
+
+require 'active_job'
+require 'active_job/base'
 
 module Async
 	module Job
