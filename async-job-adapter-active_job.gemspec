@@ -28,5 +28,4 @@ Gem::Specification.new do |spec|
 	
 	spec.add_dependency "async-job", "~> 0.9"
 	spec.add_dependency "async-service", "~> 0.12"
-	spec.add_dependency "thread-local"
 end

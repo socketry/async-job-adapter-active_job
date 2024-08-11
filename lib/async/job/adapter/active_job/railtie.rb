@@ -6,8 +6,6 @@
 require 'async/job'
 require 'async/job/processor/inline'
 
-require 'thread/local'
-
 require_relative 'dispatcher'
 
 Thread.attr_accessor :async_job_adapter_active_job_dispatcher

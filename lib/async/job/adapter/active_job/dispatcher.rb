@@ -7,7 +7,6 @@ require_relative 'executor'
 require_relative 'interface'
 
 require 'async/job'
-require 'thread/local'
 require 'async/job/builder'
 
 module Async
