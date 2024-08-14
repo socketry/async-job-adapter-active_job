@@ -17,7 +17,7 @@ module Async
 					# Prepare the dispacher with the given definitions and aliases.
 					# @parameter definitions [Hash(String, Proc)] The definitions to use constructing queues.
 					# @parameter aliases [Hash(String, Proc)] The aliases for the definitions.
-					def initialize(definitions, aliases = {})
+					def initialize(definitions = {}, aliases = {})
 						@definitions = definitions
 						@aliases = aliases
 						
@@ -29,6 +29,9 @@ module Async
 					
 					# @attribute [Hash(String, String)] The aliases for the definitions.
 					attr :aliases
+					
+					# @attribute [Hash(String, Queue)] The queues that have been constructed.
+					attr :queues
 					
 					# Look up a queue by name, constructing it if necessary using the given definition.
 					# @parameter name [String] The name of the queue.
