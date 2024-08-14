@@ -1,18 +1,18 @@
 # Getting Started
 
-This guide explains how to get started with the `async-job-active_job-adapter` gem.
+This guide explains how to get started with the `async-job-adapter-active_job` gem.
 
 ## Installation
 
 Add the gem to your Rails project:
 
 ``` bash
-$ bundle add async-job-active_job-adapter
+$ bundle add async-job-adapter-active_job
 ```
 
 ## Core Concepts
 
-The `async-job-active_job-adapter` gem provides an Active Job adapter for the `async-job` gem. This allows you to use the `async-job` gem with Rails' built-in Active Job framework.
+The `async-job-adapter-active_job` gem provides an Active Job adapter for the `async-job` gem. This allows you to use the `async-job` gem with Rails' built-in Active Job framework.
 
 - The {ruby Async::Job::ActiveJob::Dispatcher} class manages zero or more queues.
 - The {ruby Async::Job::ActiveJob::Railtie} class provides a convenient interface for configuring the integration.
@@ -34,12 +34,12 @@ Rails.application.configure do
 	config.async_job.define_queue "default" do
 		dequeue Async::Job::Processor::Redis
 	end
-	
+
 	# Create a queue named "local" which uses the Inline backend:
 	config.async_job.define_queue "local" do
 		dequeue Async::Job::Processor::Inline
 	end
-	
+
 	# Set Async::Job as the global Active Job queue adapter:
 	config.active_job.queue_adapter = :async_job
 end
@@ -55,7 +55,7 @@ Rather than using `Async::Job` for all jobs, you could opt in using a specific q
 class MyJob < ApplicationJob
 	queue_adapter :async_job
 	queue_as :local
-	
+
 	# ...
 end
 ```

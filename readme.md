@@ -8,7 +8,7 @@ Provides an adapter for ActiveJob on top of `Async::Job`.
 
 Please see the [project documentation](https://socketry.github.io/async-job-adapter-active_job/) for more details.
 
-  - [Getting Started](https://socketry.github.io/async-job-adapter-active_job/guides/getting-started/index) - This guide explains how to get started with the `async-job-active_job-adapter` gem.
+  - [Getting Started](https://socketry.github.io/async-job-adapter-active_job/guides/getting-started/index) - This guide explains how to get started with the `async-job-adapter-active_job` gem.
 
 ## Contributing
 
