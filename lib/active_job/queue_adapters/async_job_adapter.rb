@@ -5,6 +5,8 @@
 
 require 'active_job/queue_adapters/abstract_adapter'
 
+require 'kernel/sync'
+
 module ActiveJob
 	module QueueAdapters
 		class AsyncJobAdapter < AbstractAdapter
@@ -14,12 +16,16 @@ module ActiveJob
 			
 			# Enqueue a job for processing.
 			def enqueue(job)
-				@dispatcher.call(job)
+				Sync do
+					@dispatcher.call(job)
+				end
 			end
 			
 			# Enqueue a job for processing at a specific time.
 			def enqueue_at(job, timestamp)
-				@dispatcher.call(job)
+				Sync do
+					@dispatcher.call(job)
+				end
 			end
 		end
 	end
