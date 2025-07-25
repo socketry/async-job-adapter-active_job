@@ -62,7 +62,7 @@ Rather than using `Async::Job` for all jobs, you could opt in using a specific q
 
 ``` ruby
 class MyJob < ApplicationJob
-	queue_adapter :async_job
+	self.queue_adapter = :async_job
 	queue_as :local
 
 	# ...
