@@ -1,16 +1,16 @@
 # Releases
 
-## Unreleased
+## v0.15.0
 
   - Fix handling of scheduled jobs with proper `scheduled_at` assignment.
   - 100% documentation coverage.
   - 100% test coverage.
   - Modernize code formatting and structure.
-  - Fix typo in gem name (#7).
+  - Fix typo in gem name (\#7).
 
 ## v0.14.1
 
-  - Ensure the adapter wraps enqueue operations with `Sync` (#10).
+  - Ensure the adapter wraps enqueue operations with `Sync` (\#10).
 
 ## v0.14.0
 
@@ -27,7 +27,7 @@
 
 ## v0.12.1
 
-  - Force string names for queue identifiers, fixes #5.
+  - Force string names for queue identifiers, fixes \#5.
 
 ## v0.12.0
 

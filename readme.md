@@ -12,7 +12,57 @@ Please see the [project documentation](https://socketry.github.io/async-job-adap
 
 ## Releases
 
-There are no documented releases.
+Please see the [project releases](https://socketry.github.io/async-job-adapter-active_job/releases/index) for all releases.
+
+### v0.15.0
+
+  - Fix handling of scheduled jobs with proper `scheduled_at` assignment.
+  - 100% documentation coverage.
+  - 100% test coverage.
+  - Modernize code formatting and structure.
+  - Fix typo in gem name (\#7).
+
+### v0.14.1
+
+  - Ensure the adapter wraps enqueue operations with `Sync` (\#10).
+
+### v0.14.0
+
+  - Support for running multiple queues.
+  - Minor documentation fixes.
+
+### v0.13.0
+
+  - Add support for `:async_job` queue adapter name.
+  - Require `active_job` in the executor.
+  - Updated logging examples and documentation.
+  - Remove `thread-local` gem dependency.
+  - Improve error handling - don't log failures as ActiveJob already handles this.
+
+### v0.12.1
+
+  - Force string names for queue identifiers, fixes \#5.
+
+### v0.12.0
+
+  - Improved error handling - let ActiveJob handle retry logic.
+
+### v0.11.0
+
+  - Prefer `define_queue` and `alias_queue` methods for queue configuration.
+
+### v0.10.0
+
+  - Rename "pipeline" concept to "queue" for consistency.
+
+### v0.9.0
+
+  - Update interface to suit upstream async-job changes.
+
+### v0.8.0
+
+  - Add `#start`/`#stop` delegators for better lifecycle management.
+  - Performance improvements with benchmarking.
 
 ## Contributing
 
