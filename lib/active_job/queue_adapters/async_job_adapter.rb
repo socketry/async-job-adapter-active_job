@@ -20,6 +20,7 @@ module ActiveJob
 			end
 			
 			# Enqueue a job for processing.
+			# @parameter job [ActiveJob::Base] The job to enqueue.
 			def enqueue(job)
 				Sync do
 					@dispatcher.call(job)
@@ -27,7 +28,11 @@ module ActiveJob
 			end
 			
 			# Enqueue a job for processing at a specific time.
+			# @parameter job [ActiveJob::Base] The job to enqueue.
+			# @parameter timestamp [Time] The time at which to enqueue the job.
 			def enqueue_at(job, timestamp)
+				job.scheduled_at = timestamp
+				
 				Sync do
 					@dispatcher.call(job)
 				end

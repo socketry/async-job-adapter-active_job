@@ -69,7 +69,7 @@ describe ActiveJob::QueueAdapters::AsyncJobAdapter do
 	with "#enqueue_at" do
 		let(:adapter) {subject.new(dispatcher)}
 		let(:job) {TestJob.new}
-		let(:timestamp) {Time.now + 60}
+		let(:timestamp) {Time.now}
 		
 		before do
 			dispatcher.queues["default"] = queue
@@ -84,6 +84,7 @@ describe ActiveJob::QueueAdapters::AsyncJobAdapter do
 					"job_class" => be == "TestJob",
 					"queue_name" => be == "default",
 					"arguments" => be == [],
+					"scheduled_at" => be == timestamp.iso8601(9),
 				)
 			end
 		end
