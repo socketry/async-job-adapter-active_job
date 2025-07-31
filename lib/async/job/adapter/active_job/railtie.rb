@@ -19,6 +19,7 @@ module Async
 						dequeue Processor::Inline
 					end
 					
+					# Initialize the railtie with default queue configuration.
 					def initialize
 						@definitions = {"default" => DEFAULT_QUEUE_DEFINITION}
 						@aliases = {}

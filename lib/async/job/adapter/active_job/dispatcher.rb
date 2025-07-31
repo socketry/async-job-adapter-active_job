@@ -42,6 +42,8 @@ module Async
 						end
 					end
 					
+					# Dispatch a job to the appropriate queue.
+					# @parameter job [ActiveJob::Base] The job to dispatch.
 					def call(job)
 						name = @aliases.fetch(job.queue_name, job.queue_name)
 						
@@ -53,6 +55,8 @@ module Async
 						self[name].server.start
 					end
 					
+					# Get the names of all available queue definitions.
+					# @returns [Array<String>] The queue definition names.
 					def keys
 						@definitions.keys
 					end

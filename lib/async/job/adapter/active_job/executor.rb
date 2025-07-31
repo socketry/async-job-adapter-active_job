@@ -17,10 +17,14 @@ module Async
 			module ActiveJob
 				# An executor for processing jobs using `ActiveJob`.
 				class Executor
+					# Initialize the executor with an optional delegate.
+					# @parameter delegate [Object] An optional delegate object for handling lifecycle methods.
 					def initialize(delegate = nil)
 						@delegate = delegate
 					end
 					
+					# Execute a job with the given data.
+					# @parameter job_data [Hash] Serialized job data from ActiveJob.
 					def execute(job_data)
 						::ActiveJob::Callbacks.run_callbacks(:execute) do
 							job = ::ActiveJob::Base.deserialize(job_data)
@@ -46,10 +50,12 @@ module Async
 						@delegate&.call(job)
 					end
 					
+					# Start the delegate if present.
 					def start
 						@delegate&.start
 					end
 					
+					# Stop the delegate if present.
 					def stop
 						@delegate&.stop
 					end

@@ -10,3 +10,16 @@ if defined?(Rails::Railtie)
 	require_relative "active_job/railtie"
 	require "active_job/queue_adapters/async_job_adapter"
 end
+
+# @namespace
+module Async
+	# @namespace
+	module Job
+		# @namespace
+		module Adapter
+			# @namespace
+			module ActiveJob
+			end
+		end
+	end
+end

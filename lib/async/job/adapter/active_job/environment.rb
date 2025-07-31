@@ -22,6 +22,8 @@ module Async
 						ENV.fetch("RAILS_ROOT", Dir.pwd)
 					end
 					
+					# Get the default dispatcher instance.
+					# @returns [Object] The dispatcher from the Railtie.
 					def dispatcher
 						Railtie.dispatcher
 					end

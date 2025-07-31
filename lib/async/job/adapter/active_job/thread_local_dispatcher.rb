@@ -13,6 +13,9 @@ module Async
 			module ActiveJob
 				# Used for dispatching jobs to a thread-local queue to avoid thread-safety issues.
 				class ThreadLocalDispatcher
+					# Initialize with queue definitions and aliases.
+					# @parameter definitions [Hash] The queue definitions.
+					# @parameter aliases [Hash] The queue aliases.
 					def initialize(definitions, aliases)
 						@definitions = definitions
 						@aliases = aliases
@@ -31,10 +34,14 @@ module Async
 						Thread.current.async_job_adapter_active_job_dispatcher ||= Dispatcher.new(@definitions, @aliases)
 					end
 					
+					# Get a queue by name.
+					# @parameter name [String] The queue name.
 					def [](name)
 						dispatcher[name]
 					end
 					
+					# Dispatch a job using the thread-local dispatcher.
+					# @parameter job [ActiveJob::Base] The job to dispatch.
 					def call(job)
 						dispatcher.call(job)
 					end

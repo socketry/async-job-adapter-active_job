@@ -7,9 +7,14 @@ require "active_job/queue_adapters/abstract_adapter"
 
 require "kernel/sync"
 
+# @namespace
 module ActiveJob
+	# @namespace
 	module QueueAdapters
+		# ActiveJob adapter for async-job, providing asynchronous job processing capabilities.
 		class AsyncJobAdapter < AbstractAdapter
+			# Initialize the adapter with a dispatcher.
+			# @parameter dispatcher [Object] The job dispatcher, defaults to the Railtie dispatcher.
 			def initialize(dispatcher = ::Async::Job::Adapter::ActiveJob::Railtie.dispatcher)
 				@dispatcher = dispatcher
 			end
