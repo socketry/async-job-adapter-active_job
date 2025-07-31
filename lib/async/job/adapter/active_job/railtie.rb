@@ -3,10 +3,10 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
-require 'async/job'
-require 'async/job/processor/inline'
+require "async/job"
+require "async/job/processor/inline"
 
-require_relative 'thread_local_dispatcher'
+require_relative "thread_local_dispatcher"
 
 module Async
 	module Job

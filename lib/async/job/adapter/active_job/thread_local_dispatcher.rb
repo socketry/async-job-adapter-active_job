@@ -3,7 +3,7 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
-require_relative 'dispatcher'
+require_relative "dispatcher"
 
 Thread.attr_accessor :async_job_adapter_active_job_dispatcher
 

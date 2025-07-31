@@ -3,9 +3,11 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
-require 'async/service/generic'
-require 'console/event/failure'
-require 'async/barrier'
+require "async/service/generic"
+require "console/event/failure"
+
+require "async"
+require "async/barrier"
 
 module Async
 	module Job
@@ -18,7 +20,7 @@ module Async
 						container.run(name: self.name, restart: true) do |instance|
 							evaluator = @environment.evaluator
 							
-							require File.expand_path('config/environment', evaluator.root)
+							require File.expand_path("config/environment", evaluator.root)
 							
 							dispatcher = evaluator.dispatcher
 							

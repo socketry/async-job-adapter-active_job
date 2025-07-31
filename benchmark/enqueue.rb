@@ -1,14 +1,17 @@
 # frozen_string_literal: true
 
-require 'sus/fixtures/async/reactor_context'
+# Released under the MIT License.
+# Copyright, 2024, by Samuel Williams.
 
-require 'async/job'
-require 'async/job/buffer'
-require 'async/job/adapter/active_job/interface'
+require "sus/fixtures/async/reactor_context"
 
-require_relative '../fixtures/test_job'
+require "async/job"
+require "async/job/buffer"
+require "async/job/adapter/active_job/interface"
 
-require 'benchmark'
+require_relative "../fixtures/test_job"
+
+require "benchmark"
 
 describe Async::Job::Adapter::ActiveJob do
 	include Sus::Fixtures::Async::ReactorContext

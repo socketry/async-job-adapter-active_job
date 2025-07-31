@@ -3,8 +3,8 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
-require 'active_job/railtie'
-require 'async/job/adapter/active_job'
+require "active_job/railtie"
+require "async/job/adapter/active_job"
 
 class AsyncJobTestJob < ActiveJob::Base
 	self.queue_adapter = :async_job

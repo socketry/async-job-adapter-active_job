@@ -3,7 +3,7 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
-require_relative 'service'
+require_relative "service"
 
 module Async
 	module Job
@@ -16,8 +16,10 @@ module Async
 						Service
 					end
 					
+					# The rails root.
+					# @return [String]
 					def root
-						ENV.fetch('RAILS_ROOT', Dir.pwd)
+						ENV.fetch("RAILS_ROOT", Dir.pwd)
 					end
 					
 					def dispatcher
@@ -26,8 +28,8 @@ module Async
 					
 					# The name of the queue to use.
 					def queue_names
-						if queue_names = ENV['ASYNC_JOB_ADAPTER_ACTIVE_JOB_QUEUE_NAMES']
-							queue_names.split(',')
+						if queue_names = ENV["ASYNC_JOB_ADAPTER_ACTIVE_JOB_QUEUE_NAMES"]
+							queue_names.split(",")
 						else
 							dispatcher.keys
 						end

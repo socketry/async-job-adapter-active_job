@@ -3,9 +3,9 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
-require 'active_job/queue_adapters/abstract_adapter'
+require "active_job/queue_adapters/abstract_adapter"
 
-require 'kernel/sync'
+require "kernel/sync"
 
 module ActiveJob
 	module QueueAdapters

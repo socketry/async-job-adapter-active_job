@@ -3,14 +3,14 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
-require 'async/job/adapter/active_job'
-require 'async/job/processor/inline'
-require 'async/job/buffer'
-require 'async/job/builder'
+require "async/job/adapter/active_job"
+require "async/job/processor/inline"
+require "async/job/buffer"
+require "async/job/builder"
 
-require 'sus/fixtures/async/reactor_context'
-require 'sus/fixtures/console/captured_logger'
-require 'test_job'
+require "sus/fixtures/async/reactor_context"
+require "sus/fixtures/console/captured_logger"
+require "test_job"
 
 describe Async::Job::Adapter::ActiveJob do
 	include Sus::Fixtures::Async::ReactorContext

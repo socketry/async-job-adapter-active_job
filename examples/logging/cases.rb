@@ -1,17 +1,20 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'active_job'
+# Released under the MIT License.
+# Copyright, 2024, by Samuel Williams.
 
-if ARGV.include? '--proposed'
-	require_relative 'proposed'
+require "active_job"
+
+if ARGV.include? "--proposed"
+	require_relative "proposed"
 end
 
 class GoodJob < ActiveJob::Base
 	queue_as :default
 	
 	def perform
-		puts 'Hello, world!'
+		puts "Hello, world!"
 	end
 end
 
@@ -19,7 +22,7 @@ class BadJob < ActiveJob::Base
 	queue_as :default
 	
 	def perform
-		raise 'This is a bad job!'
+		raise "This is a bad job!"
 	end
 end
 
@@ -28,7 +31,7 @@ class RetryJob < ActiveJob::Base
 	retry_on StandardError, wait: 5.seconds, attempts: 3
 	
 	def perform
-		raise 'This is a bad job!'
+		raise "This is a bad job!"
 	end
 end
 
@@ -37,7 +40,7 @@ class DiscardJob < ActiveJob::Base
 	discard_on StandardError
 	
 	def perform
-		raise 'This is a bad job!'
+		raise "This is a bad job!"
 	end
 end
 
@@ -47,7 +50,7 @@ class DefaultDiscardRaiseJob < ActiveJob::Base
 	end
 	
 	def perform
-		raise 'This is a bad job!'
+		raise "This is a bad job!"
 	end
 end
 
@@ -69,7 +72,7 @@ job_server_execute(job_data)
 $stdout.puts "```\n\n"
 
 $stderr.puts "### Case 3: Error in Job Server\n\n```"
-job_data = {'job_class' => 'DoesNotExistJob'}
+job_data = {"job_class" => "DoesNotExistJob"}
 job_server_execute(job_data)
 $stdout.puts "```\n\n"
 

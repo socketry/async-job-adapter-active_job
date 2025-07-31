@@ -3,8 +3,8 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
-require 'active_job'
-require 'fiber/storage'
+require "active_job"
+require "fiber/storage"
 
 module TestQueueAdapter
 	class Dispatcher

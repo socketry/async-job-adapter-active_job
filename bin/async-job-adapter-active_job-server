@@ -1,10 +1,10 @@
 #!/usr/bin/env ruby
 # frozen_string_literal: true
 
-require 'async/service/configuration'
-require 'async/service/controller'
+require "async/service/configuration"
+require "async/service/controller"
 
-require 'async/job/adapter/active_job/environment'
+require "async/job/adapter/active_job/environment"
 
 configuration = Async::Service::Configuration.build do
 	service "async-job-adapter-active_job-server" do

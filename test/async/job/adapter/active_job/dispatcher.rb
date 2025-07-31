@@ -3,12 +3,12 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
-require 'test_job'
-require 'active_job/queue_adapters/async_job_adapter'
-require 'async/job/adapter/active_job/dispatcher'
-require 'async/job/processor/inline'
+require "test_job"
+require "active_job/queue_adapters/async_job_adapter"
+require "async/job/adapter/active_job/dispatcher"
+require "async/job/processor/inline"
 
-require 'sus/fixtures/console/captured_logger'
+require "sus/fixtures/console/captured_logger"
 
 describe Async::Job::Adapter::ActiveJob::Dispatcher do
 	include Sus::Fixtures::Console::CapturedLogger

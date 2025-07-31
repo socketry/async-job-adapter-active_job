@@ -3,10 +3,10 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
-require 'test_job'
-require 'async/job/adapter/active_job/executor'
+require "test_job"
+require "async/job/adapter/active_job/executor"
 
-require 'sus/fixtures/console/captured_logger'
+require "sus/fixtures/console/captured_logger"
 
 describe Async::Job::Adapter::ActiveJob::Executor do
 	include Sus::Fixtures::Console::CapturedLogger

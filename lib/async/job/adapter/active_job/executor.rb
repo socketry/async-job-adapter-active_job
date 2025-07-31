@@ -3,13 +3,13 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
-require 'json'
+require "json"
 
-require 'console'
-require 'console/event/failure'
+require "console"
+require "console/event/failure"
 
-require 'active_job'
-require 'active_job/base'
+require "active_job"
+require "active_job/base"
 
 module Async
 	module Job

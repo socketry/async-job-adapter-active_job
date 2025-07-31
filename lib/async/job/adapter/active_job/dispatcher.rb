@@ -3,10 +3,10 @@
 # Released under the MIT License.
 # Copyright, 2024, by Samuel Williams.
 
-require_relative 'executor'
+require_relative "executor"
 
-require 'async/job'
-require 'async/job/builder'
+require "async/job"
+require "async/job/builder"
 
 module Async
 	module Job
