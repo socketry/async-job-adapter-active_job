@@ -7,7 +7,9 @@ source "https://rubygems.org"
 
 gemspec
 
-# gem "activejob", ">= 7.1"
+gem "agent-context"
+
+# gem "activejob", ">= 8.0"
 # gem "rails", path: "../../ioquatix/rails"
 # gem "activejob", path: "../../ioquatix/rails/activejob"
 # gem "async-job", path: "../async-job"
@@ -35,7 +37,7 @@ group :test do
 	gem "bake-test"
 	gem "bake-test-external"
 	
-	gem "rails", "~> 7.1"
+	gem "rails", "~> 8.0"
 	
 	gem "fiber-storage"
 end

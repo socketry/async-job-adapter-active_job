@@ -26,4 +26,32 @@ describe Async::Job::Adapter::ActiveJob::Railtie do
 		expect(queue.client).to be_a(Async::Job::Processor::Inline)
 		expect(queue.server).to be_a(Async::Job::Processor::Inline)
 	end
+	
+	with "#define_queue" do
+		it "can define a queue with name conversion" do
+			block = proc{"test definition"}
+			
+			subject.define_queue(:test_queue, &block)
+			expect(subject.definitions["test_queue"]).to be == block
+		end
+		
+		it "can define a queue with aliases" do
+			block = proc{"test definition"}
+			
+			subject.define_queue("main_queue", "alias1", "alias2", &block)
+			
+			expect(subject.definitions["main_queue"]).to be == block
+			expect(subject.aliases["alias1"]).to be == "main_queue"
+			expect(subject.aliases["alias2"]).to be == "main_queue"
+		end
+	end
+	
+	with "#alias_queue" do
+		it "can create queue aliases" do
+			subject.alias_queue("main", "alias_a", "alias_b")
+			
+			expect(subject.aliases["alias_a"]).to be == "main"
+			expect(subject.aliases["alias_b"]).to be == "main"
+		end
+	end
 end

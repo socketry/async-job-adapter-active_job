@@ -44,4 +44,26 @@ describe Async::Job::Adapter::ActiveJob::Dispatcher do
 			end
 		end
 	end
+	
+	with "#start" do
+		it "can start queue server" do
+			mock_server = Object.new
+			mock_server.define_singleton_method(:start) {}
+			
+			mock_queue = Object.new
+			mock_queue.define_singleton_method(:server) {mock_server}
+			
+			dispatcher.queues["test_queue"] = mock_queue
+			
+			expect(mock_server).to receive(:start)
+			dispatcher.start("test_queue")
+		end
+	end
+	
+	with "#keys" do
+		it "can get definition keys" do
+			keys = dispatcher.keys
+			expect(keys).to be == []
+		end
+	end
 end
