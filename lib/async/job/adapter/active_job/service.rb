@@ -29,17 +29,17 @@ module Async
 							
 							instance.ready!
 							
-							if health_check_timeout
-								Async(transient: true) do
-									while true
-										instance.name = "#{self.name} (#{dispatcher.status_string})"
-										sleep(health_check_timeout / 2)
-										instance.ready!
+							Sync do |task|
+								if health_check_timeout
+									Async(transient: true) do
+										while true
+											instance.name = "#{self.name} (#{dispatcher.status_string})"
+											sleep(health_check_timeout / 2)
+											instance.ready!
+										end
 									end
 								end
-							end
-							
-							Sync do |task|
+								
 								barrier = Async::Barrier.new
 								
 								# Start all the named queues:

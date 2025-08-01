@@ -62,9 +62,12 @@ module Async
 					end
 					
 					def status_string
-						@queues.map do |name, queue|
-							if queue.respond_to?(:status_string)
-								"#{name} (#{queue.status_string})"
+						self.keys.map do |name|
+							queue = @queues[name]
+							server = queue&.server
+							
+							if server&.respond_to?(:status_string)
+								"#{name} #{server.status_string}"
 							else
 								name
 							end
