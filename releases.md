@@ -1,6 +1,6 @@
 # Releases
 
-## Unreleased
+## v0.17.0
 
   - Fix health check.
 
