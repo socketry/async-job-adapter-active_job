@@ -67,27 +67,27 @@ describe Async::Job::Adapter::ActiveJob::Dispatcher do
 		end
 	end
 	
-	with "#status_string" do
-		it "returns a status string for all queues" do
-			dispatcher.queues["test_queue"] = queue
+	with "#defintions" do
+		it "can add definitions" do
+			dispatcher.definitions[:test_queue] = proc do
+				Async::Job::Builder.new(
+					Async::Job::Processor::Inline.new(nil)
+				).build
+			end
+			
+			expect(dispatcher.keys).to be == [:test_queue]
+			
+			expect(dispatcher[:test_queue]).to be_a(Async::Job::Queue)
 			
 			expect(dispatcher.status_string).to be == "test_queue"
 		end
-		
-		with "queues with status" do
-			let(:mock_queue) do
-				Object.new.tap do |queue|
-					queue.define_singleton_method(:status_string) { "mock status" }
-				end
-			end
+	end
+	
+	with "#status_string" do
+		it "returns a status string for all queues" do
+			dispatcher.definitions["test_queue"] = Object.new
 			
-			before do
-				dispatcher.queues["test_queue"] = mock_queue
-			end
-			
-			it "returns the status string for each queue" do
-				expect(dispatcher.status_string).to be == "test_queue (mock status)"
-			end
+			expect(dispatcher.status_string).to be == "test_queue"
 		end
 	end
 end

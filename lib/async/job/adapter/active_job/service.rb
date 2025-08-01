@@ -31,7 +31,7 @@ module Async
 							
 							Sync do |task|
 								if health_check_timeout
-									Async(transient: true) do
+									task.async(transient: true) do
 										while true
 											instance.name = "#{self.name} (#{dispatcher.status_string})"
 											sleep(health_check_timeout / 2)
