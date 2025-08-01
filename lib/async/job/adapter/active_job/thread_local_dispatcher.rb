@@ -56,6 +56,11 @@ module Async
 					def keys
 						@definitions.keys
 					end
+					
+					# Get the status string for the dispatcher, useful for process titles.
+					def status_string
+						dispatcher.status_string
+					end
 				end
 			end
 		end

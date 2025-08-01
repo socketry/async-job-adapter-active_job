@@ -46,4 +46,12 @@ describe Async::Job::Adapter::ActiveJob::ThreadLocalDispatcher do
 			expect(keys).to be == ["default"]
 		end
 	end
+	
+	with "#status_string" do
+		it "can get status string from dispatcher" do
+			expect(thread_local_dispatcher.dispatcher).to receive(:status_string).and_return("default (test)")
+			
+			expect(thread_local_dispatcher.status_string).to be == "default (test)"
+		end
+	end
 end

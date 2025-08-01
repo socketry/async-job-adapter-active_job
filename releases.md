@@ -1,5 +1,9 @@
 # Releases
 
+## Unreleased
+
+  - Fixed `ThreadLocalDispatcher` to correctly handle `status_string`.
+
 ## v0.16.0
 
   - Add container options for controlling number of workers and health check timeout.
