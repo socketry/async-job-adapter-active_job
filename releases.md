@@ -1,6 +1,6 @@
 # Releases
 
-## Unreleased
+## v0.16.2
 
   - Add default count (nil = process count).
 

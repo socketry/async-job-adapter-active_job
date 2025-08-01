@@ -14,6 +14,10 @@ Please see the [project documentation](https://socketry.github.io/async-job-adap
 
 Please see the [project releases](https://socketry.github.io/async-job-adapter-active_job/releases/index) for all releases.
 
+### v0.16.2
+
+  - Add default count (nil = process count).
+
 ### v0.16.1
 
   - Fixed `ThreadLocalDispatcher` to correctly handle `status_string`.
@@ -59,10 +63,6 @@ Please see the [project releases](https://socketry.github.io/async-job-adapter-a
 ### v0.11.0
 
   - Prefer `define_queue` and `alias_queue` methods for queue configuration.
-
-### v0.10.0
-
-  - Rename "pipeline" concept to "queue" for consistency.
 
 ## Contributing
 
