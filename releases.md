@@ -1,6 +1,6 @@
 # Releases
 
-## Unreleased
+## v0.16.1
 
   - Fixed `ThreadLocalDispatcher` to correctly handle `status_string`.
 
