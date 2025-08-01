@@ -33,7 +33,7 @@ module Async
 					# The aliases for the definitions, if any.
 					attr :aliases
 					
-					# Thed default dispatcher for processing jobs.
+					# The default dispatcher for processing jobs.
 					attr :dispatcher
 					
 					# Define a new backend for processing jobs.

@@ -17,6 +17,9 @@ module Async
 				class Service < Async::Service::Generic
 					# Load the Rails environment and start the job server.
 					def setup(container)
+						container_options = @evaluator.container_options
+						health_check_timeout = container_options[:health_check_timeout]
+						
 						container.run(name: self.name, restart: true) do |instance|
 							evaluator = @environment.evaluator
 							
@@ -25,6 +28,16 @@ module Async
 							dispatcher = evaluator.dispatcher
 							
 							instance.ready!
+							
+							if health_check_timeout
+								Async(transient: true) do
+									while true
+										instance.name = "#{self.name} (#{dispatcher.status_string})"
+										sleep(health_check_timeout / 2)
+										instance.ready!
+									end
+								end
+							end
 							
 							Sync do |task|
 								barrier = Async::Barrier.new

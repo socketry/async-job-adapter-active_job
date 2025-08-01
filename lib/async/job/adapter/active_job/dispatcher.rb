@@ -61,6 +61,16 @@ module Async
 						@definitions.keys
 					end
 					
+					def status_string
+						@queues.map do |name, queue|
+							if queue.respond_to?(:status_string)
+								"#{name} (#{queue.status_string})"
+							else
+								name
+							end
+						end.join(", ")
+					end
+					
 					private def build(definition)
 						builder = Builder.new(Executor::DEFAULT)
 						

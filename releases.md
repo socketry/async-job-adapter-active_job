@@ -1,5 +1,10 @@
 # Releases
 
+## Unreleased
+
+  - Add container options for controlling number of workers and health check timeout.
+  - Add `status_string` method to `Dispatcher` for better process titles.
+
 ## v0.15.0
 
   - Fix handling of scheduled jobs with proper `scheduled_at` assignment.

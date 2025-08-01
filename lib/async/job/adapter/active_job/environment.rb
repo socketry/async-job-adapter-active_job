@@ -36,6 +36,15 @@ module Async
 							dispatcher.keys
 						end
 					end
+					
+					# Options to use when creating the container.
+					def container_options
+						{
+							restart: true,
+							count: self.count,
+							health_check_timeout: 30,
+						}.compact
+					end
 				end
 			end
 		end

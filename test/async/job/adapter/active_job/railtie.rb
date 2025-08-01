@@ -54,4 +54,12 @@ describe Async::Job::Adapter::ActiveJob::Railtie do
 			expect(subject.aliases["alias_b"]).to be == "main"
 		end
 	end
+	
+	with "#start" do
+		it "can start a queue server" do
+			expect(subject.dispatcher).to receive(:start).with("test_queue").and_return(nil)
+			
+			subject.start("test_queue")
+		end
+	end
 end
