@@ -14,6 +14,10 @@ Please see the [project documentation](https://socketry.github.io/async-job-adap
 
 Please see the [project releases](https://socketry.github.io/async-job-adapter-active_job/releases/index) for all releases.
 
+### v0.16.3
+
+  - Actually use `container_options`. I have been working too much.
+
 ### v0.16.2
 
   - Add default count (nil = process count).
@@ -59,10 +63,6 @@ Please see the [project releases](https://socketry.github.io/async-job-adapter-a
 ### v0.12.0
 
   - Improved error handling - let ActiveJob handle retry logic.
-
-### v0.11.0
-
-  - Prefer `define_queue` and `alias_queue` methods for queue configuration.
 
 ## Contributing
 

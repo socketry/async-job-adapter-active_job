@@ -7,7 +7,7 @@ module Async
 	module Job
 		module Adapter
 			module ActiveJob
-				VERSION = "0.16.2"
+				VERSION = "0.16.3"
 			end
 		end
 	end
