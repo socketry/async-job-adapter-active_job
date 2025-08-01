@@ -20,7 +20,7 @@ module Async
 						container_options = @evaluator.container_options
 						health_check_timeout = container_options[:health_check_timeout]
 						
-						container.run(name: self.name, restart: true) do |instance|
+						container.run(name: self.name, **container_options) do |instance|
 							evaluator = @environment.evaluator
 							
 							require File.expand_path("config/environment", evaluator.root)

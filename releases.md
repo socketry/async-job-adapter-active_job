@@ -1,5 +1,9 @@
 # Releases
 
+## Unreleased
+
+  - Actually use `container_options`. I have been working too much.
+
 ## v0.16.2
 
   - Add default count (nil = process count).
