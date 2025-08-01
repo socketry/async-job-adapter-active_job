@@ -14,6 +14,11 @@ Please see the [project documentation](https://socketry.github.io/async-job-adap
 
 Please see the [project releases](https://socketry.github.io/async-job-adapter-active_job/releases/index) for all releases.
 
+### v0.16.0
+
+  - Add container options for controlling number of workers and health check timeout.
+  - Add `status_string` method to `Dispatcher` for better process titles.
+
 ### v0.15.0
 
   - Fix handling of scheduled jobs with proper `scheduled_at` assignment.
@@ -58,11 +63,6 @@ Please see the [project releases](https://socketry.github.io/async-job-adapter-a
 ### v0.9.0
 
   - Update interface to suit upstream async-job changes.
-
-### v0.8.0
-
-  - Add `#start`/`#stop` delegators for better lifecycle management.
-  - Performance improvements with benchmarking.
 
 ## Contributing
 

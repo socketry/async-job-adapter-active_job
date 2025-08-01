@@ -1,6 +1,6 @@
 # Releases
 
-## Unreleased
+## v0.16.0
 
   - Add container options for controlling number of workers and health check timeout.
   - Add `status_string` method to `Dispatcher` for better process titles.
