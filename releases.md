@@ -1,5 +1,9 @@
 # Releases
 
+## Unreleased
+
+  - Add default count (nil = process count).
+
 ## v0.16.1
 
   - Fixed `ThreadLocalDispatcher` to correctly handle `status_string`.
