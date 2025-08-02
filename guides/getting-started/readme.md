@@ -23,6 +23,20 @@ In general, `Async::Job` has a concept of queues, where jobs enter into a queue,
 
 In order to use `Async::Job`, you need to define your queues and configure the Active Job adapter. Here is an example configuration:
 
+### `ActiveJob` Queue Adapter Configuration
+
+You can configure the ActiveJob queue adapter globally (in `config/application.rb`) or per-environment (in `config/environments/*.rb`).
+
+```
+# In config/application.rb or config/environments/*.rb
+
+config.active_job.queue_adapter = :async_job
+```
+
+### `Async::Job` Queue Configuration
+
+You can define your queues in an initializer file (e.g., `config/initializers/async_job.rb`). Here is an example configuration that sets up two queues: a default queue using Redis and a local queue that processes jobs inline.
+
 ``` ruby
 # config/initializers/async_job.rb
 
@@ -39,13 +53,8 @@ Rails.application.configure do
 	config.async_job.define_queue "local" do
 		dequeue Async::Job::Processor::Inline
 	end
-
-	# Set Async::Job as the global Active Job queue adapter:
-	config.active_job.queue_adapter = :async_job
 end
 ```
-
-This configuration sets up two queues: a default queue which uses Redis as an intermediate bridge between the client and server, and a local queue which processes jobs in the same process. The `config.active_job.queue_adapter = :async_job` line sets the global Active Job queue adapter to use `Async::Job`.
 
 #### Job Specific Configuration
 
