@@ -6,6 +6,9 @@
 require "async/job"
 require "async/job/processor/inline"
 
+# For `config.active_support.isolation_level`.
+require "active_support/railtie"
+
 require_relative "thread_local_dispatcher"
 
 module Async
@@ -65,6 +68,9 @@ module Async
 					end
 					
 					config.async_job = self
+					
+					# Ensure we have per-fiber isolation:
+					config.active_support.isolation_level = :fiber
 				end
 			end
 		end

@@ -27,6 +27,10 @@ describe Async::Job::Adapter::ActiveJob::Railtie do
 		expect(queue.server).to be_a(Async::Job::Processor::Inline)
 	end
 	
+	it "defaults to per-fiber isolation" do
+		expect(subject.config.active_support.isolation_level).to be == :fiber
+	end
+	
 	with "#define_queue" do
 		it "can define a queue with name conversion" do
 			block = proc{"test definition"}

@@ -1,5 +1,9 @@
 # Releases
 
+## Unreleased
+
+  - Default to per-fiber isolation.
+
 ## v0.17.0
 
   - Fix health check.
