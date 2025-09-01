@@ -1,6 +1,6 @@
 # Releases
 
-## Unreleased
+## v0.18.0
 
   - Default to per-fiber isolation.
 

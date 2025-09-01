@@ -14,6 +14,10 @@ Please see the [project documentation](https://socketry.github.io/async-job-adap
 
 Please see the [project releases](https://socketry.github.io/async-job-adapter-active_job/releases/index) for all releases.
 
+### v0.18.0
+
+  - Default to per-fiber isolation.
+
 ### v0.17.0
 
   - Fix health check.
@@ -59,10 +63,6 @@ Please see the [project releases](https://socketry.github.io/async-job-adapter-a
   - Updated logging examples and documentation.
   - Remove `thread-local` gem dependency.
   - Improve error handling - don't log failures as ActiveJob already handles this.
-
-### v0.12.1
-
-  - Force string names for queue identifiers, fixes \#5.
 
 ## Contributing
 
