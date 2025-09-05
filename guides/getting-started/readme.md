@@ -35,7 +35,7 @@ config.active_job.queue_adapter = :async_job
 
 ### `Async::Job` Queue Configuration
 
-You can define your queues in an initializer file (e.g., `config/initializers/async_job.rb`). Here is an example configuration that sets up two queues: a default queue using Redis and a local queue that processes jobs inline.
+You can define your queues in an initializer file (e.g., `config/initializers/async_job.rb`). Here is an example configuration that sets up two queues: a default queue using Redis and a local queue that processes jobs inline. NOTE that inline jobs will run **sequentially** (that is, not concurrently) outside of an `Async` event loop (that is to say, your jobs will block unless you're running your server using falcon).
 
 ``` ruby
 # config/initializers/async_job.rb
