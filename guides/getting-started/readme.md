@@ -40,15 +40,15 @@ You can define your queues in an initializer file (e.g., `config/initializers/as
 ``` ruby
 # config/initializers/async_job.rb
 
-require 'async/job/processor/redis'
-require 'async/job/processor/inline'
+require "async/job/processor/redis"
+require "async/job/processor/inline"
 
 Rails.application.configure do
 	# Create a queue for the "default" backend:
 	config.async_job.define_queue "default" do
 		dequeue Async::Job::Processor::Redis
 	end
-
+	
 	# Create a queue named "local" which uses the Inline backend:
 	config.async_job.define_queue "local" do
 		dequeue Async::Job::Processor::Inline
@@ -64,7 +64,7 @@ Rather than using `Async::Job` for all jobs, you could opt in using a specific q
 class MyJob < ApplicationJob
 	self.queue_adapter = :async_job
 	queue_as :local
-
+	
 	# ...
 end
 ```
@@ -88,7 +88,7 @@ To enqueue a job, you can use the `perform_later` method in your Active Job clas
 ``` ruby
 class MyJob < ApplicationJob
 	queue_as :default
-
+	
 	def perform(message)
 		puts message
 	end
