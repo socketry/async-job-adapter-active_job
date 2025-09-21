@@ -20,7 +20,7 @@ Gem::Specification.new do |spec|
 		"source_code_uri" => "https://github.com/socketry/async-job-adapter-active_job.git",
 	}
 	
-	spec.files = Dir["{bin,lib}/**/*", "*.md", base: __dir__]
+	spec.files = Dir["{bin,context,lib}/**/*", "*.md", base: __dir__]
 	
 	spec.executables = ["async-job-adapter-active_job-server"]
 	
