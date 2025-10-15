@@ -89,5 +89,18 @@ describe Async::Job::Adapter::ActiveJob::Dispatcher do
 			
 			expect(dispatcher.status_string).to be == "test_queue"
 		end
+		
+		it "includes server status when server responds to status_string" do
+			mock_server = Object.new
+			mock_server.define_singleton_method(:status_string) {"running"}
+			
+			mock_queue = Object.new
+			mock_queue.define_singleton_method(:server) {mock_server}
+			
+			dispatcher.definitions["test_queue"] = Object.new
+			dispatcher.queues["test_queue"] = mock_queue
+			
+			expect(dispatcher.status_string).to be == "test_queue running"
+		end
 	end
 end

@@ -12,11 +12,15 @@ module Async
 		module Adapter
 			module ActiveJob
 				module Recurring
+					# Loads recurring task definitions from YAML configuration.
 					module Loader
 						module_function
 						
 						DEFAULT_PATH = "config/recurring.yml"
 						
+						# Determine the path to the recurring schedule file.
+						# @parameter root [String] The application root directory.
+						# @returns [String] The path to the schedule file.
 						def schedule_path(root)
 							ENV["ASYNC_JOB_RECURRING_SCHEDULE"] || ENV["SOLID_QUEUE_RECURRING_SCHEDULE"] || ENV["RECURRING_SCHEDULE_FILE"] || File.join(root, DEFAULT_PATH)
 						end

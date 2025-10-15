@@ -16,9 +16,12 @@ module Async
 		module Adapter
 			module ActiveJob
 				module Recurring
+					# Backend configuration for deduplication and last-run tracking.
 					module Backend
 						module_function
 						
+						# Check if Redis backend is enabled based on environment configuration.
+						# @returns [Boolean] True if Redis is enabled and available.
 						def redis_enabled?
 							backend = ENV["ASYNC_JOB_RECURRING_DEDUP"] || ENV["JOBS_DEDUP_BACKEND"] || "auto"
 							last = ENV["ASYNC_JOB_RECURRING_LAST"] || ENV["JOBS_LAST_BACKEND"] || "auto"
@@ -27,6 +30,8 @@ module Async
 							(wants_redis || auto_redis) && defined?(Async::Redis::Client)
 						end
 						
+						# Get or create a Redis client connection.
+						# @returns [Async::Redis::Client, nil] The Redis client or nil if not enabled.
 						def redis_client
 							return @redis if defined?(@redis) && @redis
 							return nil unless redis_enabled?
@@ -35,6 +40,8 @@ module Async
 							@redis = Async::Redis::Client.new(endpoint)
 						end
 						
+						# Determine which backend to use for deduplication.
+						# @returns [String] Either "redis" or "memory".
 						def dedup_backend
 							v = ENV["ASYNC_JOB_RECURRING_DEDUP"] || ENV["JOBS_DEDUP_BACKEND"] || "auto"
 							return "redis" if v == "redis"
@@ -42,6 +49,8 @@ module Async
 							redis_enabled? ? "redis" : "memory"
 						end
 						
+						# Determine which backend to use for last-run tracking.
+						# @returns [String] Either "redis" or "cache".
 						def last_backend
 							v = ENV["ASYNC_JOB_RECURRING_LAST"] || ENV["JOBS_LAST_BACKEND"] || "auto"
 							return "redis" if v == "redis"
@@ -50,15 +59,20 @@ module Async
 						end
 					end
 					
+					# Schedules and enqueues recurring tasks based on cron expressions.
 					class Scheduler
 						DEFAULT_DEDUP_TTL = Integer(ENV["ASYNC_JOB_RECURRING_DEDUP_TTL"] || ENV["JOBS_SCHEDULER_DEDUP_TTL"] || "600")
 						DEFAULT_PREFIX = ENV["ASYNC_JOB_REDIS_PREFIX"] || ENV["JOBS_REDIS_PREFIX"] || "async-job"
 						
+						# Initialize the scheduler with a list of tasks.
+						# @parameter tasks [Array<Task>] The recurring tasks to schedule.
+						# @parameter prefix [String] The Redis key prefix.
 						def initialize(tasks, prefix: DEFAULT_PREFIX)
 							@tasks = tasks
 							@prefix = prefix
 						end
 						
+						# Start the scheduler and run all recurring tasks in parallel.
 						def run
 							barrier = Async::Barrier.new
 							@tasks.each do |task|
@@ -67,7 +81,7 @@ module Async
 							barrier.wait
 						end
 						
-												private
+														private
 						def run_task(task)
 							loop do
 								now = Time.now
@@ -98,8 +112,8 @@ module Async
 									
 									write_last(task.key, Time.now)
 									Console.info(self, "Enqueued recurring task.", key: task.key)
-																rescue => e
-																	Console.warn(self, "Recurring task failed!", key: task.key, exception: e)
+																		rescue => e
+																			Console.warn(self, "Recurring task failed!", key: task.key, exception: e)
 								end
 							end
 						end
@@ -118,9 +132,9 @@ module Async
 								@mem[mk] = true
 								return true
 							end
-												rescue => e
-													Console.warn(self, "Dedup claim failed; proceeding.", key: key, exception: e)
-													true
+														rescue => e
+															Console.warn(self, "Dedup claim failed; proceeding.", key: key, exception: e)
+															true
 						end
 						
 						def write_last(key, t)
@@ -131,8 +145,8 @@ module Async
 									::Rails.cache.write("#{@prefix}:recurring:last:#{key}", t.to_i, expires_in: 1.hour)
 								end
 							end
-												rescue => e
-													Console.warn(self, "Failed to write last run.", key: key, exception: e)
+														rescue => e
+															Console.warn(self, "Failed to write last run.", key: key, exception: e)
 						end
 					end
 				end
