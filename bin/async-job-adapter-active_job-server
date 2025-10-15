@@ -5,10 +5,36 @@ require "async/service/configuration"
 require "async/service/controller"
 
 require "async/job/adapter/active_job/environment"
+require "async/job/adapter/active_job/recurring/environment"
+require "async/job/adapter/active_job/recurring/loader"
+require "yaml"
+
+# Flush output from child processes immediately so logs aren't buffered until shutdown.
+STDOUT.sync = true
+STDERR.sync = true
+
+root = ENV.fetch("RAILS_ROOT", Dir.pwd)
+env  = ENV["RAILS_ENV"] || ENV["RACK_ENV"] || "development"
+schedule_file = Async::Job::Adapter::ActiveJob::Recurring::Loader.schedule_path(root)
+has_schedule = begin
+  data = File.exist?(schedule_file) ? (YAML.load_file(schedule_file) || {}) : {}
+  section = data.fetch(env, {}) || {}
+  !section.empty?
+rescue => _
+  false
+end
+
+skip_scheduler = ENV['ASYNC_JOB_SKIP_RECURRING'] == 'true' || ENV['SOLID_QUEUE_SKIP_RECURRING'] == 'true' || ENV['JOBS_SKIP_RECURRING'] == 'true'
 
 configuration = Async::Service::Configuration.build do
-	service "async-job-adapter-active_job-server" do
+	service "jobs" do
 		include Async::Job::Adapter::ActiveJob::Environment
+	end
+
+	unless skip_scheduler || !has_schedule
+		service "scheduler" do
+			include Async::Job::Adapter::ActiveJob::Recurring::Environment
+		end
 	end
 end
 
