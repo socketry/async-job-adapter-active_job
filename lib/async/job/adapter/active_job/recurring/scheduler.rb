@@ -16,6 +16,60 @@ module Async
 		module Adapter
 			module ActiveJob
 				module Recurring
+					# Reconciles configured recurring tasks with any previously
+					# persisted set, removing keys for tasks that were removed
+					# from the schedule (sidekiq-cron style). This does NOT
+					# purge already-enqueued jobs from queues.
+					module Reconciler
+						module_function
+						
+						# Reconcile configured tasks with persisted Redis state, removing keys for deleted tasks.
+						# Cleans up deduplication locks, last-run records, and task set entries for tasks
+						# that were removed from the schedule configuration.
+						# @parameter tasks [Array<Task>] The current set of recurring tasks to reconcile.
+						# @parameter prefix [String] The Redis key prefix for recurring task data.
+						def reconcile(tasks, prefix: Scheduler::DEFAULT_PREFIX)
+							return unless Backend.redis_enabled?
+							redis = Backend.redis_client
+							set_key = "#{prefix}:recurring:tasks"
+							last_key = "#{prefix}:recurring:last"
+							
+							current = Array(tasks).map(&:key)
+							existing = redis.call("SMEMBERS", set_key) || []
+							removed  = existing - current
+							added    = current - existing
+							
+							removed.each do |key|
+								# Delete dedup locks for historical executions of this task
+								pattern = "#{prefix}:recurring:exec:#{key}:*"
+								scan_and_delete(redis, pattern)
+								# Drop last-run record for this task
+								redis.call("HDEL", last_key, key)
+								# Remove from tasks set
+								redis.call("SREM", set_key, key)
+								Console.info(self, "[recurring] removed task", key: key)
+							end
+							
+							redis.call("SADD", set_key, *added) unless added.empty?
+							Console.info(self, "[recurring] reconcile", kept: (current - added), removed: removed, added: added) unless (removed.empty? && added.empty?)
+						rescue => e
+							Console.warn(self, "[recurring] reconcile failed", exception: e)
+						end
+						
+						# Scan Redis for keys matching a pattern and delete them in batches.
+						# Uses Redis SCAN to safely iterate through keys without blocking.
+						# @parameter redis [Async::Redis::Client] The Redis client connection.
+						# @parameter pattern [String] The Redis key pattern to match (e.g., "prefix:*").
+						def scan_and_delete(redis, pattern)
+							cursor = "0"
+							begin
+								cursor, batch = redis.call("SCAN", cursor, "MATCH", pattern, "COUNT", 200)
+								slice = Array(batch)
+								redis.call("DEL", *slice) unless slice.empty?
+							end while cursor != "0"
+						end
+					end
+					
 					# Backend configuration for deduplication and last-run tracking.
 					module Backend
 						module_function
@@ -84,13 +138,13 @@ module Async
 														private
 						def run_task(task)
 							loop do
-								now = Time.now
-								next_eo = task.cron.next_time(now)
-								delay = next_eo.to_f - now.to_f
-								Async::Task.current.sleep(delay) if delay > 0
-								
-								run_at = Time.at(next_eo.to_i)
 								begin
+									now = Time.now
+									next_eo = task.cron.next_time(now)
+									delay = next_eo.to_f - now.to_f
+									Async::Task.current.sleep(delay) if delay > 0
+									
+									run_at = Time.at(next_eo.to_i)
 									next unless claim(task.key, run_at)
 									
 									if task.klass
@@ -112,8 +166,10 @@ module Async
 									
 									write_last(task.key, Time.now)
 									Console.info(self, "Enqueued recurring task.", key: task.key)
-																		rescue => e
-																			Console.warn(self, "Recurring task failed!", key: task.key, exception: e)
+								rescue => e
+									Console.warn(self, "Recurring task failed!", key: task.key, exception: e)
+									# Sleep briefly before retrying to avoid tight error loop
+									Async::Task.current.sleep(5)
 								end
 							end
 						end

@@ -6,12 +6,14 @@ require "yaml"
 require "tmpdir"
 
 require "sus/fixtures/async/reactor_context"
+require "sus/fixtures/console"
 
 require "async/job/adapter/active_job/recurring/loader"
 require "async/job/adapter/active_job/recurring/task"
 
 describe Async::Job::Adapter::ActiveJob::Recurring::Loader do
 	include Sus::Fixtures::Async::ReactorContext
+	include Sus::Fixtures::Console::CapturedLogger
 	
 	let(:root) {Dir.mktmpdir("recurring-spec")}
 	

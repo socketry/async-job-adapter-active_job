@@ -44,6 +44,12 @@ module Async
 								else
 									schedule_file = Loader.schedule_path(root)
 									tasks = Loader.load(root: root, env: env)
+									# Reconcile tasks so removed ones are cleaned up (like sidekiq-cron):
+									begin
+										Reconciler.reconcile(tasks, prefix: Scheduler::DEFAULT_PREFIX)
+									rescue => e
+										Console.warn(self, "Failed to reconcile recurring tasks.", exception: e)
+									end
 									if tasks.empty?
 										if File.exist?(schedule_file)
 											Console.info(self, "No valid recurring tasks after parsing schedule.", env: env, path: schedule_file)
