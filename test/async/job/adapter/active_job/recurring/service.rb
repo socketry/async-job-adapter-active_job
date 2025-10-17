@@ -221,4 +221,43 @@ describe Async::Job::Adapter::ActiveJob::Recurring::Service do
 			end
 		end
 	end
+	
+	it "logs warning when reconciliation fails" do
+		Dir.mktmpdir("svc-spec-reconcile-fail") do |root|
+			with_env("RAILS_ROOT" => root, "ASYNC_JOB_ENV" => "test") do
+				# Stub loader to return one valid task
+				cron = Fugit.parse("*/1 * * * * *")
+				task = task_struct.new(key: "example", klass: nil, command: nil, queue: "high", priority: 5, args: nil, cron: cron)
+				
+				backend = Async::Job::Adapter::ActiveJob::Recurring
+				loader_orig = loader_mod.method(:load)
+				reconciler_orig = backend.const_get(:Reconciler).method(:reconcile)
+				scheduler_class = backend.const_get(:Scheduler)
+				
+				begin
+					loader_mod.define_singleton_method(:load) {|root:, env:| [task]}
+					# Stub Reconciler.reconcile to raise an error
+					backend::Reconciler.define_singleton_method(:reconcile) {|*args| raise "Reconcile failed!"}
+					# Stub Scheduler to return immediately without removing the class
+					scheduler_class.define_method(:run) {}
+					
+					container = FakeContainer.new
+					env = FakeEnvironment.new(evaluator: FakeEvaluator.new(name: "scheduler", health_check_timeout: nil))
+					service_class.new(env).setup(container)
+					
+					# Should log warning about reconciliation failure
+					expect_console.to have_logged(message: be(:include?, "Failed to reconcile recurring tasks."))
+					# Should continue and start scheduler anyway
+					expect_console.to have_logged(message: be(:include?, "Starting recurring scheduler."))
+					expect(container.instances.first.ready_calls).to be == 1
+								ensure
+									# Restore stubs
+									backend::Reconciler.define_singleton_method(:reconcile, reconciler_orig)
+									loader_mod.define_singleton_method(:load, loader_orig)
+									# Stop any tasks created by container
+									container&.tasks&.each(&:stop)
+				end
+			end
+		end
+	end
 end
