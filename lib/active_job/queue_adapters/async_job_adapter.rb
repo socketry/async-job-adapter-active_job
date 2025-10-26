@@ -31,7 +31,7 @@ module ActiveJob
 			# @parameter job [ActiveJob::Base] The job to enqueue.
 			# @parameter timestamp [Time] The time at which to enqueue the job.
 			def enqueue_at(job, timestamp)
-				job.scheduled_at = timestamp
+				job.scheduled_at ||= Time.at(timestamp)
 				
 				Sync do
 					@dispatcher.call(job)
