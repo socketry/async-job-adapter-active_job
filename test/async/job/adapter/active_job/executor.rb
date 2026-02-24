@@ -45,7 +45,7 @@ describe Async::Job::Adapter::ActiveJob::Executor do
 				severity: be == :error,
 				event: have_keys(
 					type: be == :failure,
-					message: be =~ /wrong constant name bad/
+					message: be =~ /class `bad` doesn't exist/
 				)
 			)
 		end
