@@ -7,7 +7,7 @@ Gem::Specification.new do |spec|
 	spec.version = Async::Job::Adapter::ActiveJob::VERSION
 	
 	spec.summary = "A asynchronous job queue for Ruby on Rails."
-	spec.authors = ["Samuel Williams", "Paul Shippy", "Trevor Turk"]
+	spec.authors = ["Samuel Williams", "David Alejandro", "Paul Shippy", "Steve Hull", "Trevor Turk"]
 	spec.license = "MIT"
 	
 	spec.cert_chain  = ["release.cert"]

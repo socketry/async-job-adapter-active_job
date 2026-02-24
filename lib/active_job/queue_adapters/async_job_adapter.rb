@@ -2,6 +2,7 @@
 
 # Released under the MIT License.
 # Copyright, 2024-2025, by Samuel Williams.
+# Copyright, 2026, by David Alejandro.
 
 require "active_job/queue_adapters/abstract_adapter"
 

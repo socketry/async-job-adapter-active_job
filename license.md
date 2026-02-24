@@ -3,6 +3,8 @@
 Copyright, 2024-2025, by Samuel Williams.  
 Copyright, 2024, by Trevor Turk.  
 Copyright, 2025, by Paul Shippy.  
+Copyright, 2025, by Steve Hull.  
+Copyright, 2026, by David Alejandro.  
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

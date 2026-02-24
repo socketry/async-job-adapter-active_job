@@ -7,7 +7,7 @@ require "test_job"
 require "async/job/adapter/active_job/thread_local_dispatcher"
 
 describe Async::Job::Adapter::ActiveJob::ThreadLocalDispatcher do
-	let(:definitions) {{"default" => proc {"test"}}}
+	let(:definitions) {{"default" => proc{"test"}}}
 	let(:aliases) {{"alias" => "default"}}
 	let(:thread_local_dispatcher) {subject.new(definitions, aliases)}
 	
@@ -15,10 +15,10 @@ describe Async::Job::Adapter::ActiveJob::ThreadLocalDispatcher do
 		it "can call dispatcher with job" do
 			job = TestJob.new
 			mock_dispatcher = Object.new
-			mock_dispatcher.define_singleton_method(:call) {|job|}
+			mock_dispatcher.define_singleton_method(:call){|job|}
 			
 			mock(thread_local_dispatcher) do |mock|
-				mock.replace(:dispatcher) {mock_dispatcher}
+				mock.replace(:dispatcher){mock_dispatcher}
 			end
 			
 			expect(mock_dispatcher).to receive(:call).with(job)
@@ -29,10 +29,10 @@ describe Async::Job::Adapter::ActiveJob::ThreadLocalDispatcher do
 	with "#start" do
 		it "can start dispatcher" do
 			mock_dispatcher = Object.new
-			mock_dispatcher.define_singleton_method(:start) {|name|}
+			mock_dispatcher.define_singleton_method(:start){|name|}
 			
 			mock(thread_local_dispatcher) do |mock|
-				mock.replace(:dispatcher) {mock_dispatcher}
+				mock.replace(:dispatcher){mock_dispatcher}
 			end
 			
 			expect(mock_dispatcher).to receive(:start).with("test_queue")

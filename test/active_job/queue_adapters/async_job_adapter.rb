@@ -2,6 +2,7 @@
 
 # Released under the MIT License.
 # Copyright, 2025, by Samuel Williams.
+# Copyright, 2026, by David Alejandro.
 
 require "test_job"
 require "active_job/queue_adapters/async_job_adapter"

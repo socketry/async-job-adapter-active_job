@@ -48,10 +48,10 @@ describe Async::Job::Adapter::ActiveJob::Dispatcher do
 	with "#start" do
 		it "can start queue server" do
 			mock_server = Object.new
-			mock_server.define_singleton_method(:start) {}
+			mock_server.define_singleton_method(:start){}
 			
 			mock_queue = Object.new
-			mock_queue.define_singleton_method(:server) {mock_server}
+			mock_queue.define_singleton_method(:server){mock_server}
 			
 			dispatcher.queues["test_queue"] = mock_queue
 			

@@ -54,8 +54,8 @@ describe Async::Job::Adapter::ActiveJob::Executor do
 	with "executor with delegate" do
 		let(:delegate) do
 			Object.new.tap do |object|
-				object.define_singleton_method(:start) {}
-				object.define_singleton_method(:stop) {}
+				object.define_singleton_method(:start){}
+				object.define_singleton_method(:stop){}
 			end
 		end
 		let(:executor) {subject.new(delegate)}
