@@ -14,6 +14,10 @@ Please see the [project documentation](https://socketry.github.io/async-job-adap
 
 Please see the [project releases](https://socketry.github.io/async-job-adapter-active_job/releases/index) for all releases.
 
+### v0.18.4
+
+  - Fix handling of `enqueue_at` with timestamp.
+
 ### v0.18.0
 
   - Default to per-fiber isolation.
@@ -55,14 +59,6 @@ Please see the [project releases](https://socketry.github.io/async-job-adapter-a
 
   - Support for running multiple queues.
   - Minor documentation fixes.
-
-### v0.13.0
-
-  - Add support for `:async_job` queue adapter name.
-  - Require `active_job` in the executor.
-  - Updated logging examples and documentation.
-  - Remove `thread-local` gem dependency.
-  - Improve error handling - don't log failures as ActiveJob already handles this.
 
 ## Contributing
 

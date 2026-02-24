@@ -1,6 +1,6 @@
 # Releases
 
-## Unreleased
+## v0.18.4
 
   - Fix handling of `enqueue_at` with timestamp.
 
