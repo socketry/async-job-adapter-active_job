@@ -1,5 +1,9 @@
 # Releases
 
+## Unreleased
+
+  - Fix handling of `enqueue_at` with timestamp.
+
 ## v0.18.0
 
   - Default to per-fiber isolation.

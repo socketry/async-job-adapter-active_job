@@ -76,7 +76,7 @@ describe ActiveJob::QueueAdapters::AsyncJobAdapter do
 		end
 		
 		it "can enqueue a job at specific time" do
-			adapter.enqueue_at(job, timestamp)
+			adapter.enqueue_at(job, timestamp.to_f)
 			
 			Sync do
 				serialized_job = buffer.pop
@@ -84,7 +84,7 @@ describe ActiveJob::QueueAdapters::AsyncJobAdapter do
 					"job_class" => be == "TestJob",
 					"queue_name" => be == "default",
 					"arguments" => be == [],
-					"scheduled_at" => be == timestamp.iso8601(9),
+					"scheduled_at" => be == job.scheduled_at.iso8601(9),
 				)
 			end
 		end
@@ -93,7 +93,39 @@ describe ActiveJob::QueueAdapters::AsyncJobAdapter do
 			# This test verifies that the job gets dispatched successfully at a specific time
 			# The Sync wrapper is tested implicitly by the successful enqueueing
 			expect(dispatcher.queues["default"]).to be_a(Object)
-			adapter.enqueue_at(job, timestamp)
+			adapter.enqueue_at(job, timestamp.to_f)
+		end
+	end
+	
+	with "job with :wait option" do
+		let(:adapter) {subject.new(dispatcher)}
+		let(:job) {TestJob.new}
+		let(:wait) {0.second}
+		
+		before do
+			dispatcher.queues["default"] = queue
+			job.set(wait:)
+		end
+		
+		it "can enqueue a job with :wait option" do
+			adapter.enqueue_at(job, job.scheduled_at.to_f)
+			
+			Sync do
+				serialized_job = buffer.pop
+				expect(serialized_job).to have_keys(
+					"job_class" => be == "TestJob",
+					"queue_name" => be == "default",
+					"arguments" => be == [],
+					"scheduled_at" => be == job.scheduled_at.utc.iso8601(9),
+				)
+			end
+		end
+		
+		it "successfully dispatches job through Sync wrapper" do
+			# This test verifies that the job gets dispatched successfully at a specific time
+			# The Sync wrapper is tested implicitly by the successful enqueueing
+			expect(dispatcher.queues["default"]).to be_a(Object)
+			adapter.enqueue_at(job, job.scheduled_at.to_f)
 		end
 	end
 	
