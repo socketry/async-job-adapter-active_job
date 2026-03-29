@@ -118,7 +118,6 @@ module Async
 								
 								barrier.wait
 							ensure
-								health_reporter&.stop
 								barrier.stop
 							end
 						end
