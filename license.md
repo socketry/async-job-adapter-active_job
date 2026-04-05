@@ -1,6 +1,6 @@
 # MIT License
 
-Copyright, 2024-2025, by Samuel Williams.  
+Copyright, 2024-2026, by Samuel Williams.  
 Copyright, 2024, by Trevor Turk.  
 Copyright, 2025, by Paul Shippy.  
 Copyright, 2025, by Steve Hull.  

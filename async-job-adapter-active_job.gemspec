@@ -24,8 +24,9 @@ Gem::Specification.new do |spec|
 	
 	spec.executables = ["async-job-adapter-active_job-server"]
 	
-	spec.required_ruby_version = ">= 3.2"
+	spec.required_ruby_version = ">= 3.3"
 	
+	spec.add_dependency "async", "~> 2.39"
 	spec.add_dependency "async-job", "~> 0.9"
 	spec.add_dependency "async-service", "~> 0.12"
 end
