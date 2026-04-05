@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 # Released under the MIT License.
-# Copyright, 2024-2025, by Samuel Williams.
+# Copyright, 2024-2026, by Samuel Williams.
 
 require "async/service/generic"
 require "console/event/failure"
@@ -52,9 +52,9 @@ module Async
 									end
 								end
 								
-								barrier.wait
+								barrier.wait or sleep
 							ensure
-								barrier.stop
+								barrier&.stop
 							end
 						end
 					end
