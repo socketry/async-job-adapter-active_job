@@ -38,9 +38,17 @@ module Async
 					end
 					
 					# Number of instances to start. By default (when nil), uses `Etc.nprocessors`.
+					# You can override via `ASYNC_JOB_WORKERS` or `JOBS_COUNT`.
+					# In development, defaults to 1 if not specified.
 					# @returns [Integer | nil]
 					def count
-						nil
+						if workers = (ENV["ASYNC_JOB_WORKERS"] || ENV["JOBS_COUNT"]) 
+							Integer(workers)
+						elsif defined?(::Rails) && ::Rails.env.development?
+							1
+						else
+							nil
+						end
 					end
 					
 					# Options to use when creating the container.

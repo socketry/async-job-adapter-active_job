@@ -61,6 +61,8 @@ module Async
 						@definitions.keys
 					end
 					
+					# Generate a status string for all active queues.
+					# @returns [String] A comma-separated list of queue statuses.
 					def status_string
 						self.keys.map do |name|
 							queue = @queues[name]

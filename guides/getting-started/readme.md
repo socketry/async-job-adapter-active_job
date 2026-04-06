@@ -71,10 +71,19 @@ end
 
 ### Running A Server
 
-If you are using a queue that requires a server (e.g. Redis), you will need to run a server. A simple server is provided `async-job-adapter-active_job-server`, which by default will run all define queues.
+If you are using a queue that requires a server (e.g. Redis), you will need to run a server. A simple server is provided `async-job-adapter-active_job-server`, which by default will run all defined queues. It can also run a recurring scheduler that reads `config/recurring.yml` and enqueues Active Job tasks using Fugit-based cron.
 
 ``` bash
 $ bundle exec async-job-adapter-active_job-server
+
+The server runs two services by default:
+
+- `jobs` — Active Job workers for all configured queues.
+- `scheduler` — Recurring scheduler (Fugit-based) that enqueues tasks from `config/recurring.yml`.
+
+Disable the scheduler with `ASYNC_JOB_SKIP_RECURRING=true`.
+
+See `guides/recurring` for configuration and environment variables.
 ```
 
 You can specify different queues using the `ASYNC_JOB_ADAPTER_ACTIVE_JOB_QUEUE_NAMES` environment variable.

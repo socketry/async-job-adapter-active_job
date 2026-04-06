@@ -29,4 +29,7 @@ Gem::Specification.new do |spec|
 	spec.add_dependency "async", "~> 2.39"
 	spec.add_dependency "async-job", "~> 0.9"
 	spec.add_dependency "async-service", "~> 0.12"
+	# Recurring scheduler support (cron parsing + optional Redis cross-host dedup):
+	spec.add_dependency "fugit", "~> 1.10"
+	spec.add_dependency "async-redis", "~> 0.13"
 end

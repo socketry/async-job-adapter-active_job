@@ -30,12 +30,6 @@ describe ActiveJob::QueueAdapters::AsyncJobAdapter do
 			adapter = subject.new(dispatcher)
 			expect(adapter.instance_variable_get(:@dispatcher)).to be == dispatcher
 		end
-		
-		it "can initialize with default dispatcher" do
-			# Skip test that requires Rails/Railtie - tested in integration
-			# This would test: adapter = subject.new
-			# expect(adapter.instance_variable_get(:@dispatcher)).to be_a(Async::Job::Adapter::ActiveJob::ThreadLocalDispatcher)
-		end
 	end
 	
 	with "#enqueue" do
