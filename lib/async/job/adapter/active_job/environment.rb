@@ -42,6 +42,14 @@ module Async
 					def count
 						nil
 					end
+
+					# How long to wait for running jobs to finish when the server is asked to stop, before they are cancelled. When nil (the default), running jobs are cancelled immediately, as before.
+					# @returns [Numeric | nil]
+					def drain_timeout
+						if drain_timeout = ENV["ASYNC_JOB_ADAPTER_ACTIVE_JOB_DRAIN_TIMEOUT"]
+							Float(drain_timeout)
+						end
+					end
 					
 					# Options to use when creating the container.
 					def container_options
