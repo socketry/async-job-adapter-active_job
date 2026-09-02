@@ -10,6 +10,10 @@ files:
   title: Getting Started
   description: This guide explains how to use `async-job-adapter-active_job` to run
     Rails Active Job workloads with inline or Redis-backed queues.
+- path: testing.md
+  title: Testing
+  description: This guide explains how to test Active Job workloads without running
+    `async-job` queues inline during every test.
 - path: production-deployment.md
   title: Production Deployment
   description: This guide explains how to deploy `async-job-adapter-active_job` with

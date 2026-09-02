@@ -1,8 +1,11 @@
 getting-started:
   order: 1
 
-production-deployment:
+testing:
   order: 2
 
-queue-configuration:
+production-deployment:
   order: 3
+
+queue-configuration:
+  order: 4
