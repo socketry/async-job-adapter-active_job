@@ -31,14 +31,22 @@ Replace the built-in `default` queue definition in `config/initializers/async_jo
 ```ruby
 require "async/job/processor/redis"
 
+redis_endpoint = Async::Redis::Endpoint.parse(ENV.fetch("REDIS_URL"))
+
 Rails.application.configure do
 	config.async_job.define_queue "default" do
-		dequeue Async::Job::Processor::Redis
+		dequeue Async::Job::Processor::Redis, endpoint: redis_endpoint
 	end
 end
 ```
 
-The processor connects to Redis on its local default endpoint unless another endpoint is provided. With one logical queue, the default `async-job` prefix is sufficient. Configure distinct, stable prefixes when multiple queue definitions share a Redis endpoint.
+Set `REDIS_URL` in both the Rails and worker process environments. It may use the `redis://` or `rediss://` scheme and include credentials, a port, and a database number:
+
+```shell
+$ REDIS_URL=redis://redis.example.com:6379/0 bundle exec async-job-adapter-active_job-server
+```
+
+Without an explicit endpoint, the processor connects to `redis://localhost:6379`. With one logical queue, the default `async-job` prefix is sufficient. Configure distinct, stable prefixes when multiple queue definitions share a Redis endpoint.
 
 ## Starting Workers
 
