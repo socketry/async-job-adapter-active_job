@@ -64,9 +64,3 @@ SearchIndexRefreshJob.set(wait: 5.minutes).perform_later(product.id)
 That is enough for a working setup. The adapter provides a `default` queue backed by ruby:`Async::Job::Processor::Inline`.
 
 The inline processor is intentionally simple: jobs remain in the application process and will not survive a restart. Inside an Async event loop, such as a Rails application served by Falcon, jobs can run concurrently in background tasks. Outside an Async event loop, `perform_later` waits for the job to finish before returning.
-
-## Redis Queue Prefixes
-
-The Redis processor uses a prefix to namespace its keys. The default prefix is `async-job`, and the queue definition name is not added automatically.
-
-The default is sufficient for a single Redis-backed queue. When multiple independent queue definitions share a Redis endpoint, each definition must use a distinct, stable prefix. The Rails and worker processes must use exactly the same prefix for a given queue.
