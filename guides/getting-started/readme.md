@@ -10,8 +10,6 @@ Add the adapter to your Rails application:
 $ bundle add async-job-adapter-active_job
 ```
 
-The gem requires Ruby 3.3 or later.
-
 ## Core Concepts
 
 The adapter connects Active Job's standard API to an `async-job` processing pipeline:
