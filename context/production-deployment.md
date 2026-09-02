@@ -77,21 +77,3 @@ Before sending production traffic, confirm that:
 - Redis persistence and availability match the durability requirements of the application.
 
 An inline definition cannot transfer jobs into another process. If a job runs in the web process or never appears in Redis, confirm that the Rails process actually replaced the built-in inline definition.
-
-## Troubleshooting
-
-### Jobs Do Not Reach the Worker
-
-Confirm that both process types load the same definition, Redis endpoint, prefix, and Rails environment. Also verify that the job's `queue_as` value resolves to that definition.
-
-### The Worker Cannot Load Rails
-
-Run the command from the Rails application root, or set `RAILS_ROOT` to the directory containing `config/environment.rb`.
-
-### A Selected Queue Does Not Start
-
-Check that `ASYNC_JOB_ADAPTER_ACTIVE_JOB_QUEUE_NAMES` contains comma-separated definition names without spaces. An alias is not a worker target.
-
-### `perform_later` Still Waits for the Job
-
-The Rails process is still using the inline definition. Ensure the Redis initializer loads in that environment and replaces `default`, then restart the process.
