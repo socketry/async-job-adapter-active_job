@@ -61,6 +61,8 @@ module Async
 						@definitions.keys
 					end
 					
+					# Generate a summary of the configured queues and their server status.
+					# @returns [String] A comma-separated summary of all configured queues.
 					def status_string
 						self.keys.map do |name|
 							queue = @queues[name]
