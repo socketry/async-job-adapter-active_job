@@ -1,98 +1,142 @@
 # Getting Started
 
-This guide explains how to get started with the `async-job-adapter-active_job` gem.
+This gem connects Rails' Active Job framework to `async-job`. It includes an in-process queue for simple applications and development, and it can use processors such as Redis when jobs need to run in separate worker processes.
 
 ## Installation
 
-Add the gem to your Rails project:
+Add the adapter to your Rails application:
 
-``` bash
+```shell
 $ bundle add async-job-adapter-active_job
 ```
 
-## Core Concepts
+The gem requires Ruby 3.3 or later.
 
-The `async-job-adapter-active_job` gem provides an Active Job adapter for the `async-job` gem. This allows you to use the `async-job` gem with Rails' built-in Active Job framework.
+## Quick Start
 
-- The {ruby Async::Job::ActiveJob::Dispatcher} class manages zero or more queues.
-- The {ruby Async::Job::ActiveJob::Railtie} class provides a convenient interface for configuring the integration.
+Configure Active Job to use the adapter in `config/application.rb`:
 
-In general, `Async::Job` has a concept of queues, where jobs enter into a queue, may get serialized to a queue, then deserialized and processed. This ActiveJob adapter provides {ruby Async::Job::ActiveJob::Interface} which goes at the head of the queue, and matches the interface that ActiveJob expects for enqueueing jobs. At the tail of the queue, the {ruby Async::Job::ActiveJob::Executor} class is responsible for processing jobs by dispatching back into ActiveJob.
-
-## Usage
-
-In order to use `Async::Job`, you need to define your queues and configure the Active Job adapter. Here is an example configuration:
-
-### `ActiveJob` Queue Adapter Configuration
-
-You can configure the ActiveJob queue adapter globally (in `config/application.rb`) or per-environment (in `config/environments/*.rb`).
-
-```
-# In config/application.rb or config/environments/*.rb
-
-config.active_job.queue_adapter = :async_job
+```ruby
+module MyApplication
+	class Application < Rails::Application
+		config.active_job.queue_adapter = :async_job
+	end
+end
 ```
 
-### `Async::Job` Queue Configuration
+Create an Active Job as usual:
 
-You can define your queues in an initializer file (e.g., `config/initializers/async_job.rb`). Here is an example configuration that sets up two queues: a default queue using Redis and a local queue that processes jobs inline. NOTE that inline jobs will run **sequentially** (that is, not concurrently) outside of an `Async` event loop (that is to say, your jobs will block unless you're running your server using falcon).
+```ruby
+class GreetingJob < ApplicationJob
+	queue_as :default
 
-``` ruby
-# config/initializers/async_job.rb
+	def perform(name)
+		Rails.logger.info("Hello, #{name}!")
+	end
+end
+```
 
+Enqueue it with `perform_later`:
+
+```ruby
+GreetingJob.perform_later("World")
+```
+
+That is enough for a working setup. The adapter provides a `default` queue backed by {ruby Async::Job::Processor::Inline}, so it does not need Redis or a separate worker.
+
+The inline processor is intentionally simple: jobs remain in the application process and will not survive a restart. Inside an Async event loop, such as a Rails application served by Falcon, jobs can run concurrently in background tasks. Outside an Async event loop, `perform_later` waits for the job to finish before returning.
+
+## Using Redis and a Separate Worker
+
+Use a persistent processor when jobs must outlive the web process or run on separate machines. Redis support is provided by a separate gem:
+
+```shell
+$ bundle add async-job-processor-redis
+```
+
+Replace the built-in `default` queue definition in `config/initializers/async_job.rb`:
+
+```ruby
 require "async/job/processor/redis"
-require "async/job/processor/inline"
 
 Rails.application.configure do
-	# Create a queue for the "default" backend:
 	config.async_job.define_queue "default" do
-		dequeue Async::Job::Processor::Redis
-	end
-	
-	# Create a queue named "local" which uses the Inline backend:
-	config.async_job.define_queue "local" do
-		dequeue Async::Job::Processor::Inline
+		dequeue Async::Job::Processor::Redis, prefix: "my-application:#{Rails.env}:default"
 	end
 end
 ```
 
-#### Job Specific Configuration
+The Redis processor connects to Redis on the local default endpoint unless you pass it another endpoint. Use an application-, environment-, and queue-specific prefix to keep unrelated jobs separate. See the `async-job-processor-redis` documentation for connection and processor options.
 
-Rather than using `Async::Job` for all jobs, you could opt in using a specific queue adapter for a specific job. Here is an example:
+Start a worker from the root of the Rails application so it can load `config/environment.rb`:
 
-``` ruby
-class MyJob < ApplicationJob
+```shell
+$ RAILS_ENV=production bundle exec async-job-adapter-active_job-server
+```
+
+By default, the worker starts every defined queue. To start only selected queues, provide a comma-separated list of definition names:
+
+```shell
+$ ASYNC_JOB_ADAPTER_ACTIVE_JOB_QUEUE_NAMES=default,critical bundle exec async-job-adapter-active_job-server
+```
+
+If the command is not run from the Rails application root, set `RAILS_ROOT` explicitly.
+
+An inline queue is local to the process that enqueues the job. Starting a separate worker for an inline queue does not move those jobs into that worker; use a shared processor such as Redis for that arrangement.
+
+## Defining Multiple Queues
+
+Every queue name used by an Active Job must have a matching definition or alias. For example:
+
+```ruby
+require "async/job/processor/redis"
+
+Rails.application.configure do
+	config.async_job.define_queue "default" do
+		dequeue Async::Job::Processor::Redis, prefix: "my-application:#{Rails.env}:default"
+	end
+
+	config.async_job.define_queue "critical" do
+		dequeue Async::Job::Processor::Redis, prefix: "my-application:#{Rails.env}:critical"
+	end
+
+	config.async_job.alias_queue "default", "mailers"
+end
+```
+
+Jobs can then select a queue using the standard Active Job API:
+
+```ruby
+class BillingJob < ApplicationJob
+	queue_as :critical
+
+	def perform(account_id)
+		# ...
+	end
+end
+```
+
+Aliases route several Active Job queue names through one `async-job` queue definition. Worker selection through `ASYNC_JOB_ADAPTER_ACTIVE_JOB_QUEUE_NAMES` uses definition names (`default` and `critical` above), not aliases (`mailers`).
+
+## Opting In One Job at a Time
+
+You do not need to replace the application's global adapter. To migrate incrementally, configure the adapter on an individual job:
+
+```ruby
+class GreetingJob < ApplicationJob
 	self.queue_adapter = :async_job
-	queue_as :local
-	
-	# ...
-end
-```
-
-### Running A Server
-
-If you are using a queue that requires a server (e.g. Redis), you will need to run a server. A simple server is provided `async-job-adapter-active_job-server`, which by default will run all define queues.
-
-``` bash
-$ bundle exec async-job-adapter-active_job-server
-```
-
-You can specify different queues using the `ASYNC_JOB_ADAPTER_ACTIVE_JOB_QUEUE_NAMES` environment variable.
-
-Alternatively, you may prefer to run your own service. See the code in `bin/async-job-adapter-active_job-server` for an example of how to run a server using a service definition.
-
-### Enqueuing Jobs
-
-To enqueue a job, you can use the `perform_later` method in your Active Job class. Here is an example:
-
-``` ruby
-class MyJob < ApplicationJob
 	queue_as :default
-	
-	def perform(message)
-		puts message
+
+	def perform(name)
+		Rails.logger.info("Hello, #{name}!")
 	end
 end
-
-MyJob.perform_later("Hello, world!")
 ```
+
+Queue definitions are still configured through `config.async_job` in the same way.
+
+## How It Fits Together
+
+When `perform_later` is called, {ruby ActiveJob::QueueAdapters::AsyncJobAdapter} serializes the Active Job and sends it to the `async-job` queue selected by `queue_as`. The configured processor transports or schedules the payload. On the consumer side, {ruby Async::Job::Adapter::ActiveJob::Executor} deserializes it and invokes Active Job.
+
+Queue definitions use `async-job`'s pipeline builder. The processor is written as `dequeue` because it wraps the consumer side of that pipeline; it still provides the client used by the Rails process to enqueue jobs. The Active Job executor is appended automatically and should not be added to the definition.
