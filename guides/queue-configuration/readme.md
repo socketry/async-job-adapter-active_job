@@ -106,17 +106,3 @@ The selected queue must still have a definition or alias in `config.async_job`.
 When `perform_later` is called, ruby:`ActiveJob::QueueAdapters::AsyncJobAdapter` serializes the Active Job and sends it to the definition selected by `queue_as`. The configured processor transports or schedules the payload. On the consumer side, ruby:`Async::Job::Adapter::ActiveJob::Executor` deserializes it and invokes Active Job.
 
 Definitions use `async-job`'s pipeline builder. The processor is written as `dequeue` because it wraps the consumer side of the pipeline; it still supplies the client used by Rails to enqueue jobs. The Active Job executor is appended automatically and should not be added to the definition.
-
-## Common Pitfalls
-
-### A Queue Name Raises `KeyError`
-
-The name selected by `queue_as` does not have a matching definition or alias. Add it with `config.async_job.define_queue` or route it with `config.async_job.alias_queue`.
-
-### Separate Definitions Consume the Same Jobs
-
-Redis definitions with the same endpoint and prefix share the same underlying queue. Assign a distinct prefix to every independently processed definition.
-
-### A Worker Selection Uses an Alias
-
-`ASYNC_JOB_ADAPTER_ACTIVE_JOB_QUEUE_NAMES` accepts definition names, not aliases. Select `default`, for example, rather than an alias such as `mailers`.
