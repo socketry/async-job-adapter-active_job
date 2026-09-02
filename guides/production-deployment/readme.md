@@ -40,8 +40,6 @@ end
 
 The processor connects to Redis on its local default endpoint unless another endpoint is provided. The Rails process and worker must use the same endpoint and prefix. Use different prefixes for each application, Rails environment, and independently processed queue.
 
-See [Queue Configuration](../queue-configuration/index) for multiple definitions, aliases, and per-job routing.
-
 ## Starting Workers
 
 Run the bundled worker from the Rails application root so it can load `config/environment.rb`:

@@ -36,8 +36,6 @@ end
 
 Processors can accept positional and keyword arguments after the processor class. Use an application-, environment-, and queue-specific Redis prefix so unrelated workloads do not consume each other's jobs.
 
-The Redis processor comes from the separate `async-job-processor-redis` gem. See [Production Deployment](../production-deployment/index) for installation and worker operation.
-
 ## Defining Multiple Queues
 
 Multiple definitions allow independent worker groups to process different workloads. For example, payment capture can use a dedicated queue while ordinary work remains on `default`:
