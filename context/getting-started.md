@@ -64,8 +64,3 @@ SearchIndexRefreshJob.set(wait: 5.minutes).perform_later(product.id)
 That is enough for a working setup. The adapter provides a `default` queue backed by ruby:`Async::Job::Processor::Inline`.
 
 The inline processor is intentionally simple: jobs remain in the application process and will not survive a restart. Inside an Async event loop, such as a Rails application served by Falcon, jobs can run concurrently in background tasks. Outside an Async event loop, `perform_later` waits for the job to finish before returning.
-
-## Next Steps
-
-- [Production Deployment](../production-deployment/index) explains how to move jobs into a shared Redis queue and run separate worker processes.
-- [Queue Configuration](../queue-configuration/index) explains queue definitions, aliases, multiple queues, and per-job adoption.
