@@ -48,7 +48,7 @@ module Async
 										Console.debug(self, "Starting queue...", queue_name: queue_name)
 										dispatcher.start(queue_name)
 									rescue => error
-										Console::Event::Failure.for(error).emit(self, "Queue failed!")
+										Console.error(self, "Failed to start queue!", queue_name: queue_name, exception: error)
 									end
 								end
 								

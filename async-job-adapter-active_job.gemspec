@@ -16,6 +16,8 @@ Gem::Specification.new do |spec|
 	spec.homepage = "https://github.com/socketry/async-job-adapter-active_job"
 	
 	spec.metadata = {
+		"bug_tracker_uri" => "https://github.com/socketry/async-job-adapter-active_job/issues",
+		"changelog_uri" => "https://github.com/socketry/async-job-adapter-active_job/blob/main/releases.md",
 		"documentation_uri" => "https://socketry.github.io/async-job-adapter-active_job/",
 		"source_code_uri" => "https://github.com/socketry/async-job-adapter-active_job.git",
 	}
