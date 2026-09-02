@@ -36,6 +36,24 @@ end
 
 Processors can accept positional and keyword arguments after the processor class.
 
+## Redis Endpoints
+
+Without an explicit `endpoint`, the Redis processor connects to `redis://localhost:6379`. Pass an ruby:`Async::Redis::Endpoint` when Redis runs on another host, requires credentials, uses a different database, or accepts TLS connections:
+
+```ruby
+redis_endpoint = Async::Redis::Endpoint.parse(ENV.fetch("REDIS_URL"))
+
+Rails.application.configure do
+	config.async_job.define_queue "default" do
+		dequeue Async::Job::Processor::Redis, endpoint: redis_endpoint
+	end
+end
+```
+
+`REDIS_URL` may use either the `redis://` or `rediss://` scheme and can include credentials, a port, and a database number, for example `redis://username:password@redis.example.com:6379/1`. Keep credentials in the environment rather than writing them into the initializer.
+
+The bundled worker loads the Rails environment, so Rails and worker processes use the same queue definition. Ensure `REDIS_URL` is present and identical in both process environments.
+
 ## Redis Prefixes
 
 Without an explicit `prefix`, every Redis processor uses `async-job`. Queue definition names do not alter that default, so two definitions using the same Redis endpoint and prefix operate on the same underlying queue.
