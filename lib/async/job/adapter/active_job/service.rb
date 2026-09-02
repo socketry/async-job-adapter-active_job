@@ -8,6 +8,7 @@ require "console/event/failure"
 
 require "async"
 require "async/barrier"
+require "async/notification"
 
 module Async
 	module Job
@@ -19,16 +20,17 @@ module Async
 					def setup(container)
 						container_options = @evaluator.container_options
 						health_check_timeout = container_options[:health_check_timeout]
-						
+						drain_timeout = @evaluator.drain_timeout
+
 						container.run(name: self.name, **container_options) do |instance|
 							evaluator = @environment.evaluator
-							
+
 							require File.expand_path("config/environment", evaluator.root)
-							
+
 							dispatcher = evaluator.dispatcher
-							
+
 							instance.ready!
-							
+
 							Sync do |task|
 								if health_check_timeout
 									task.async(transient: true) do
@@ -39,9 +41,9 @@ module Async
 										end
 									end
 								end
-								
+
 								barrier = Async::Barrier.new
-								
+
 								# Start all the named queues:
 								evaluator.queue_names.each do |queue_name|
 									barrier.async do
@@ -51,8 +53,43 @@ module Async
 										Console.error(self, "Failed to start queue!", queue_name: queue_name, exception: error)
 									end
 								end
-								
-								barrier.wait or sleep
+
+								if drain_timeout
+									# A stop signal unwinds the reactor before any rescue can run (the scheduler turns it into a root task stop), so to drain we must intercept the signal itself. A self-pipe wakes a task which stops the queues from fetching, waits for running jobs to finish, then shuts down. Jobs that outlive the timeout are cancelled and recovered as abandoned jobs, as before.
+									reader, writer = ::IO.pipe
+
+									%w[INT TERM].each do |signal|
+										::Signal.trap(signal) do
+											writer.write_nonblock(".")
+										rescue ::IO::WaitWritable, ::IOError
+											# Already draining or shutting down.
+										end
+									end
+
+									shutdown = Async::Notification.new
+									drained = false
+
+									task.async(transient: true, annotation: "Draining on stop signal.") do
+										reader.read(1)
+
+										evaluator.queue_names.each do |queue_name|
+											server = dispatcher[queue_name].server
+
+											if server.respond_to?(:drain)
+												Console.info(self, "Draining queue...", queue_name: queue_name, timeout: drain_timeout)
+												server.drain(timeout: drain_timeout)
+											end
+										end
+
+										drained = true
+										shutdown.signal
+									end
+
+									# The queue tasks above do not finish (the processors' background loops are their children), so wait for the drain instead:
+									shutdown.wait unless drained
+								else
+									barrier.wait or sleep
+								end
 							ensure
 								barrier&.stop
 							end
