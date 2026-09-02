@@ -29,12 +29,24 @@ require "async/job/processor/redis"
 
 Rails.application.configure do
 	config.async_job.define_queue "default" do
-		dequeue Async::Job::Processor::Redis, prefix: "my-application:#{Rails.env}:default"
+		dequeue Async::Job::Processor::Redis
 	end
 end
 ```
 
-Processors can accept positional and keyword arguments after the processor class. Use an application-, environment-, and queue-specific Redis prefix so unrelated workloads do not consume each other's jobs.
+Processors can accept positional and keyword arguments after the processor class.
+
+## Redis Prefixes
+
+Without an explicit `prefix`, every Redis processor uses `async-job`. Queue definition names do not alter that default, so two definitions using the same Redis endpoint and prefix operate on the same underlying queue.
+
+For each independently processed queue, the prefix must be:
+
+- Distinct from other queues using the same Redis endpoint.
+- Identical in Rails and worker processes.
+- Stable across deployments so existing jobs remain reachable.
+
+Include an application or environment namespace only when those workloads share a Redis endpoint.
 
 ## Defining Multiple Queues
 
@@ -45,11 +57,11 @@ require "async/job/processor/redis"
 
 Rails.application.configure do
 	config.async_job.define_queue "default" do
-		dequeue Async::Job::Processor::Redis, prefix: "my-application:#{Rails.env}:default"
+		dequeue Async::Job::Processor::Redis, prefix: "async-job:default"
 	end
 	
 	config.async_job.define_queue "critical" do
-		dequeue Async::Job::Processor::Redis, prefix: "my-application:#{Rails.env}:critical"
+		dequeue Async::Job::Processor::Redis, prefix: "async-job:critical"
 	end
 end
 ```

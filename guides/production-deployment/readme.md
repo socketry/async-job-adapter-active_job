@@ -33,12 +33,12 @@ require "async/job/processor/redis"
 
 Rails.application.configure do
 	config.async_job.define_queue "default" do
-		dequeue Async::Job::Processor::Redis, prefix: "my-application:#{Rails.env}:default"
+		dequeue Async::Job::Processor::Redis
 	end
 end
 ```
 
-The processor connects to Redis on its local default endpoint unless another endpoint is provided. The Rails process and worker must use the same endpoint and prefix. Use different prefixes for each application, Rails environment, and independently processed queue.
+The processor connects to Redis on its local default endpoint unless another endpoint is provided. With one logical queue, the default `async-job` prefix is sufficient. Configure distinct, stable prefixes when multiple queue definitions share a Redis endpoint.
 
 ## Starting Workers
 
