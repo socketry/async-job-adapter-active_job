@@ -8,5 +8,13 @@ metadata:
 files:
 - path: getting-started.md
   title: Getting Started
-  description: This guide explains how to get started with the `async-job-adapter-active_job`
-    gem.
+  description: This guide explains how to use `async-job-adapter-active_job` to run
+    Rails Active Job workloads with inline or Redis-backed queues.
+- path: production-deployment.md
+  title: Production Deployment
+  description: This guide explains how to deploy `async-job-adapter-active_job` with
+    Redis-backed queues and separate worker processes.
+- path: queue-configuration.md
+  title: Queue Configuration
+  description: This guide explains how to configure `async-job` queue definitions,
+    route Active Jobs, and adopt the adapter incrementally.

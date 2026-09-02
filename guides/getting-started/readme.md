@@ -1,98 +1,66 @@
 # Getting Started
 
-This guide explains how to get started with the `async-job-adapter-active_job` gem.
+This guide explains how to use `async-job-adapter-active_job` to run Rails Active Job workloads with inline or Redis-backed queues.
 
 ## Installation
 
-Add the gem to your Rails project:
+Add the adapter to your Rails application:
 
-``` bash
+```shell
 $ bundle add async-job-adapter-active_job
 ```
 
 ## Core Concepts
 
-The `async-job-adapter-active_job` gem provides an Active Job adapter for the `async-job` gem. This allows you to use the `async-job` gem with Rails' built-in Active Job framework.
+The adapter connects Active Job's standard API to an `async-job` processing pipeline:
 
-- The {ruby Async::Job::ActiveJob::Dispatcher} class manages zero or more queues.
-- The {ruby Async::Job::ActiveJob::Railtie} class provides a convenient interface for configuring the integration.
+- ruby:`ActiveJob::QueueAdapters::AsyncJobAdapter` receives jobs from `perform_later` and dispatches their serialized payloads.
+- A queue definition maps an Active Job queue name to an `async-job` processor.
+- The processor determines where jobs wait and run. The built-in inline processor keeps work in the application process, while processors such as Redis support separate workers.
+- ruby:`Async::Job::Adapter::ActiveJob::Executor` deserializes queued payloads and invokes Active Job.
 
-In general, `Async::Job` has a concept of queues, where jobs enter into a queue, may get serialized to a queue, then deserialized and processed. This ActiveJob adapter provides {ruby Async::Job::ActiveJob::Interface} which goes at the head of the queue, and matches the interface that ActiveJob expects for enqueueing jobs. At the tail of the queue, the {ruby Async::Job::ActiveJob::Executor} class is responsible for processing jobs by dispatching back into ActiveJob.
+Active Job remains responsible for arguments, callbacks, retries, and error handling. This gem supplies the queue adapter and worker integration.
 
-## Usage
+## Quick Start
 
-In order to use `Async::Job`, you need to define your queues and configure the Active Job adapter. Here is an example configuration:
+The built-in inline queue is the quickest way to get started because it does not require Redis or a separate worker. It is useful during development and for non-critical work that can remain in the application process.
 
-### `ActiveJob` Queue Adapter Configuration
+Configure Active Job to use the adapter in `config/application.rb`:
 
-You can configure the ActiveJob queue adapter globally (in `config/application.rb`) or per-environment (in `config/environments/*.rb`).
-
-```
-# In config/application.rb or config/environments/*.rb
-
-config.active_job.queue_adapter = :async_job
-```
-
-### `Async::Job` Queue Configuration
-
-You can define your queues in an initializer file (e.g., `config/initializers/async_job.rb`). Here is an example configuration that sets up two queues: a default queue using Redis and a local queue that processes jobs inline. NOTE that inline jobs will run **sequentially** (that is, not concurrently) outside of an `Async` event loop (that is to say, your jobs will block unless you're running your server using falcon).
-
-``` ruby
-# config/initializers/async_job.rb
-
-require "async/job/processor/redis"
-require "async/job/processor/inline"
-
-Rails.application.configure do
-	# Create a queue for the "default" backend:
-	config.async_job.define_queue "default" do
-		dequeue Async::Job::Processor::Redis
-	end
-	
-	# Create a queue named "local" which uses the Inline backend:
-	config.async_job.define_queue "local" do
-		dequeue Async::Job::Processor::Inline
+```ruby
+module MyApplication
+	class Application < Rails::Application
+		config.active_job.queue_adapter = :async_job
 	end
 end
 ```
 
-#### Job Specific Configuration
+Create an Active Job as usual. Define retry and discard behavior on the job so expected failures are handled explicitly:
 
-Rather than using `Async::Job` for all jobs, you could opt in using a specific queue adapter for a specific job. Here is an example:
-
-``` ruby
-class MyJob < ApplicationJob
-	self.queue_adapter = :async_job
-	queue_as :local
-	
-	# ...
-end
-```
-
-### Running A Server
-
-If you are using a queue that requires a server (e.g. Redis), you will need to run a server. A simple server is provided `async-job-adapter-active_job-server`, which by default will run all define queues.
-
-``` bash
-$ bundle exec async-job-adapter-active_job-server
-```
-
-You can specify different queues using the `ASYNC_JOB_ADAPTER_ACTIVE_JOB_QUEUE_NAMES` environment variable.
-
-Alternatively, you may prefer to run your own service. See the code in `bin/async-job-adapter-active_job-server` for an example of how to run a server using a service definition.
-
-### Enqueuing Jobs
-
-To enqueue a job, you can use the `perform_later` method in your Active Job class. Here is an example:
-
-``` ruby
-class MyJob < ApplicationJob
+```ruby
+class SearchIndexRefreshJob < ApplicationJob
 	queue_as :default
+	retry_on SearchIndex::Unavailable, wait: 5.seconds, attempts: 3
+	discard_on ActiveRecord::RecordNotFound
 	
-	def perform(message)
-		puts message
+	def perform(product_id)
+		Product.find(product_id).refresh_search_index!
 	end
 end
-
-MyJob.perform_later("Hello, world!")
 ```
+
+Enqueue it with `perform_later`:
+
+```ruby
+SearchIndexRefreshJob.perform_later(product.id)
+```
+
+Scheduled jobs use the standard Active Job API too:
+
+```ruby
+SearchIndexRefreshJob.set(wait: 5.minutes).perform_later(product.id)
+```
+
+That is enough for a working setup. The adapter provides a `default` queue backed by ruby:`Async::Job::Processor::Inline`.
+
+The inline processor is intentionally simple: jobs remain in the application process and will not survive a restart. Inside an Async event loop, such as a Rails application served by Falcon, jobs can run concurrently in background tasks. Outside an Async event loop, `perform_later` waits for the job to finish before returning.
