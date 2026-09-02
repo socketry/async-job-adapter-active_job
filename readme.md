@@ -8,9 +8,13 @@ Provides an adapter for ActiveJob on top of `Async::Job`.
 
 Please see the [project documentation](https://socketry.github.io/async-job-adapter-active_job/) for more details.
 
-  - [Getting Started](https://socketry.github.io/async-job-adapter-active_job/guides/getting-started/index) - This guide explains how to run Rails Active Job workloads with inline or Redis-backed queues.
-  - [Production Deployment](https://socketry.github.io/async-job-adapter-active_job/guides/production-deployment/index) - This guide explains how to deploy Redis-backed queues and separate worker processes.
-  - [Queue Configuration](https://socketry.github.io/async-job-adapter-active_job/guides/queue-configuration/index) - This guide explains how to configure queues, aliases, and per-job routing.
+  - [Getting Started](https://socketry.github.io/async-job-adapter-active_job/guides/getting-started/index) - This guide explains how to use `async-job-adapter-active_job` to run Rails Active Job workloads with inline or Redis-backed queues.
+
+  - [Testing](https://socketry.github.io/async-job-adapter-active_job/guides/testing/index) - This guide explains how to test Active Job workloads without running `async-job` queues inline during every test.
+
+  - [Production Deployment](https://socketry.github.io/async-job-adapter-active_job/guides/production-deployment/index) - This guide explains how to deploy `async-job-adapter-active_job` with Redis-backed queues and separate worker processes.
+
+  - [Queue Configuration](https://socketry.github.io/async-job-adapter-active_job/guides/queue-configuration/index) - This guide explains how to configure `async-job` queue definitions, route Active Jobs, and adopt the adapter incrementally.
 
 ## Releases
 
