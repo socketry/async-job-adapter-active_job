@@ -46,9 +46,17 @@ module Async
 								evaluator.queue_names.each do |queue_name|
 									barrier.async do
 										Console.debug(self, "Starting queue...", queue_name: queue_name)
-										dispatcher.start(queue_name)
+										server = dispatcher.start(queue_name)
+										
+										# Waitable queue servers expose their lifecycle; synchronous queue servers need this service task to stay alive.
+										server.respond_to?(:wait) ? server.wait : sleep
 									rescue => error
-										Console.error(self, "Failed to start queue!", queue_name: queue_name, exception: error)
+										Console::Event::Failure.for(error).emit(self, "Queue failed!", queue_name: queue_name)
+										raise
+									ensure
+										# Waiting observes dispatcher failure; stopping the queue also drains
+										# its sibling lifecycle tasks before the process supervisor can restart it.
+										dispatcher.stop(queue_name)
 									end
 								end
 								

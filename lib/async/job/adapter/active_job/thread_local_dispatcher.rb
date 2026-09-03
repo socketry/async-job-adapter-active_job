@@ -52,6 +52,12 @@ module Async
 						dispatcher.start(name)
 					end
 					
+					# Stop processing jobs in the queue with the given name.
+					# @parameter name [String] The name of the queue.
+					def stop(name)
+						dispatcher.stop(name)
+					end
+					
 					# The names of all the queues that are available for processing jobs.
 					def keys
 						@definitions.keys
