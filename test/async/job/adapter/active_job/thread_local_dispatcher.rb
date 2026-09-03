@@ -40,6 +40,20 @@ describe Async::Job::Adapter::ActiveJob::ThreadLocalDispatcher do
 		end
 	end
 	
+	with "#stop" do
+		it "can stop dispatcher" do
+			mock_dispatcher = Object.new
+			mock_dispatcher.define_singleton_method(:stop){|name|}
+			
+			mock(thread_local_dispatcher) do |mock|
+				mock.replace(:dispatcher){mock_dispatcher}
+			end
+			
+			expect(mock_dispatcher).to receive(:stop).with("test_queue")
+			thread_local_dispatcher.stop("test_queue")
+		end
+	end
+	
 	with "#keys" do
 		it "can get definition keys" do
 			keys = thread_local_dispatcher.keys

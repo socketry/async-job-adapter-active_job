@@ -60,6 +60,24 @@ describe Async::Job::Adapter::ActiveJob::Dispatcher do
 		end
 	end
 	
+	with "#stop" do
+		it "stops an existing queue" do
+			mock_queue = Object.new
+			mock_queue.define_singleton_method(:stop){}
+			dispatcher.queues["test_queue"] = mock_queue
+			
+			expect(mock_queue).to receive(:stop)
+			dispatcher.stop("test_queue")
+		end
+		
+		it "does not construct a missing queue during teardown" do
+			dispatcher.definitions["test_queue"] = proc{raise "must not build"}
+			
+			expect(dispatcher.stop("test_queue")).to be_nil
+			expect(dispatcher.queues).to be(:empty?)
+		end
+	end
+	
 	with "#keys" do
 		it "can get definition keys" do
 			keys = dispatcher.keys
