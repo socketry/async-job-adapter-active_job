@@ -15,6 +15,15 @@ module Async
 			module ActiveJob
 				# A job server that can be run as a service.
 				class Service < Async::Service::Generic
+					# Preload the application before worker processes are forked.
+					def start
+						Array(@evaluator.preload).each do |path|
+							require File.expand_path(path, @evaluator.root)
+						end
+						
+						super
+					end
+					
 					# Load the Rails environment and start the job server.
 					def setup(container)
 						container_options = @evaluator.container_options
