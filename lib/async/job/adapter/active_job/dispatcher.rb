@@ -55,6 +55,12 @@ module Async
 						self[name].server.start
 					end
 					
+					# Stop a queue that was already constructed by this dispatcher.
+					# Teardown must not build a queue whose startup failed before construction.
+					def stop(name)
+						@queues[name]&.stop
+					end
+					
 					# Get the names of all available queue definitions.
 					# @returns [Array<String>] The queue definition names.
 					def keys
