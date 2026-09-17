@@ -58,6 +58,8 @@ $ RAILS_ENV=production bundle exec async-job-adapter-active_job-server
 
 The server loads the Rails environment and starts every defined queue. The service container supervises worker instances and reports their readiness.
 
+By default, `config/environment.rb` is preloaded in the parent process before worker processes are forked. This avoids loading application dependencies for the first time after a fork and allows workers to share preloaded application code.
+
 If the command cannot run from the application root, set `RAILS_ROOT` explicitly:
 
 ```shell
